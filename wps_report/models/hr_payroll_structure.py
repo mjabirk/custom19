@@ -434,7 +434,7 @@ result = tot_days  and round(contract.wage * contract.eos_days * Paid_Days / (36
                 'code': 'DEDUCTION',
                 'category_id': self.env.ref('hr_payroll.DED').id,
                 'condition_select': 'python',
-                'condition_python': """result = len(employee.overtime_line_ids.search([('employee_id','=',employee.id),('date_from', '>=', payslip.date_from), ('date_from', '<=', payslip.date_to),('type','=','deduction'),('state','=','approved'), ('ot_amount','<',0)])) or inputs.get("DED")""",
+                'condition_python': """result = len(employee.overtime_line_ids.search([('employee_id','=',employee.id),('date_from', '>=', payslip.date_from), ('date_from', '<=', payslip.date_to),('type','=','deduction'),('state','=','approved'), ('ot_amount','<',0)])) or ("DED" in inputs)""",
                 'amount_select': 'code',
                 'amount_python_compute': """result = 0
 overtime_line_ids = employee.overtime_line_ids.search([('employee_id','=',employee.id),('date_from', '>=', payslip.date_from), ('date_from', '<=', payslip.date_to),('type','=','deduction'),('state','=','approved'), ('ot_amount','<',0)]) 
@@ -462,7 +462,6 @@ if  inputs.get("DED"):
     rule_ids = fields.One2many(
         'hr.salary.rule', 'struct_id',
         string='Salary Rules', default=_get_default_rule_ids)
-
 
     def _generate_sheet(self):
         last_day_of_previous_month = datetime.today().replace(day=1) - timedelta(days=1)

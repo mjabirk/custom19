@@ -37,3 +37,20 @@ class HrVersion(models.Model):
         for record in self:
             record.eos_accrual_amount = (record.wage / days_per_month) * record.eos_days / 365
             record.leave_accrual_amount = ((record.wage + record.accommodation_allowance) / days_per_month) * record.leave_pay_days / 365
+
+    @api.model
+    def _get_whitelist_fields_from_template(self):
+        whitelisted_fields = super()._get_whitelist_fields_from_template() or []
+        if self.env.company.country_id.code == "QA":
+            whitelisted_fields += [
+                "accommodation_allowance",
+                "food_allowance",
+                "transportation_allowance",
+                "other_allowance",
+                "rp_charge",
+                "air_ticket",
+                "leave_pay_days",
+                "eos_days",
+                "leave_period",
+            ]
+        return whitelisted_fields
