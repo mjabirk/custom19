@@ -10,6 +10,7 @@
                     <!--
                       LEFT COLUMN: Holds all the monthly salary components.
                     -->
+                    <field name="wps_sponsor_id"/>
                     <group string="Monthly Allowances" name="salary_breakdown">
                         <field name="accommodation_allowance"
                                widget="monetary"

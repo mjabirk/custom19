@@ -21,6 +21,7 @@
         # 'views/hr_contract_views.xml',
          'views/hr_employee_views.xml',
         'views/hr_contract_template_views.xml',
+        'views/hr_wps_sponsor_views.xml',
         # 'views/hr_leave_views.xml',
         # 'views/payroll_automation_view.xml',
         # 'report/timeoff_report.xml',

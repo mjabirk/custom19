@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="hr_wps_sponsor_view_form" model="ir.ui.view">
+        <field name="name">hr.wps.sponsor.form</field>
+        <field name="model">hr.wps.sponsor</field>
+        <field name="arch" type="xml">
+            <form string="WPS Sponsor">
+                <sheet>
+<!--                    <div class="oe_button_box" name="button_box">-->
+<!--                        <button name="%(hr.open_view_employee_list)d"-->
+<!--                            type="action"-->
+<!--                            class="oe_stat_button"-->
+<!--                            icon="fa-users"-->
+<!--                            context="{'default_wps_sponsor_id': active_id, 'search_default_wps_sponsor_id': active_id}">-->
+<!--                            <field name="employee_count" widget="statinfo" string="Employees"/>-->
+<!--                        </button>-->
+<!--                    </div>-->
+
+                    <div class="oe_title">
+                        <label for="partner_id" class="oe_edit_only"/>
+                        <h1>
+                            <field name="partner_id"
+                                   placeholder="Sponsor's Name (Company or Person)"
+                                   context="{'default_is_company': True}"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group string="WPS Identification">
+                            <field name="employer_eid"/>
+                            <field name="payer_eid"/>
+                            <field name="payer_qid"/>
+                        </group>
+                        <group string="Computed Info">
+                            <field name="display_name" string="Full Display Name"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Sponsored Employees">
+                            <field name="employee_ids" readonly="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="work_email"/>
+                                    <field name="work_phone"/>
+                                    <field name="job_id"/>
+                                    <field name="department_id"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="hr_wps_sponsor_view_list" model="ir.ui.view">
+        <field name="name">hr.wps.sponsor.list</field>
+        <field name="model">hr.wps.sponsor</field>
+        <field name="arch" type="xml">
+            <list string="WPS Sponsors">
+                <field name="display_name" string="Sponsor"/>
+                <field name="employer_eid"/>
+                <field name="payer_eid"/>
+                <field name="payer_qid"/>
+                <field name="employee_count" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="hr_wps_sponsor_action" model="ir.actions.act_window">
+        <field name="name">WPS Sponsors</field>
+        <field name="res_model">hr.wps.sponsor</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new WPS Sponsor
+            </p><p>
+                Record sponsor details (Employer EID, Payer EID/QID) here.
+                You can then link employees to this sponsor record from their contract or employee page.
+            </p>
+        </field>
+    </record>
+
+    <menuitem
+        id="hr_wps_sponsor_menu"
+        name="WPS Sponsors"
+        action="hr_wps_sponsor_action"
+        parent="hr.menu_human_resources_configuration"
+        sequence="90"/>
+
+</odoo>
