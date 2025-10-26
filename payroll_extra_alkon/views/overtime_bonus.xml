@@ -1,0 +1,37 @@
+<odoo>
+	<data>
+
+
+
+		<!-- Bonus -->
+		<record model="ir.ui.view" id="view_overtime_bonus_form_inherit">
+			<field name="name">overtime.bonus.form.inherit</field>
+			<field name="model">overtime.bonus</field>
+            <field name="inherit_id" ref="payroll_extra.view_overtime_bonus_form" />
+			<field name="arch" type="xml">
+                <xpath expr="//field[@name='amount']" position="after">
+					<field name="trips"  groups="payroll_extra.group_benefit_manager"/>
+					<field name="rate"  groups="payroll_extra.group_benefit_manager"/>
+					<field name="calculation_type"  groups="payroll_extra.group_benefit_manager"/>
+					<field name="vehicle_id"  groups="payroll_extra.group_benefit_manager"/>
+                </xpath>
+			</field>
+		</record>
+		
+		<record model="ir.ui.view" id="view_overtime_bonus_tree_inherit">
+			<field name="name">overtime.bonus.tree.inherit</field>
+			<field name="model">overtime.bonus</field>
+            <field name="inherit_id" ref="payroll_extra.view_overtime_bonus_tree" />
+			<field name="arch" type="xml">
+                <xpath expr="//field[@name='amount']" position="after">
+					<field name="trips"  groups="payroll_extra.group_benefit_manager"/>
+					<field name="rate"  groups="payroll_extra.group_benefit_manager"/>
+					<field name="calculation_type"  groups="payroll_extra.group_benefit_manager"/>
+					<field name="vehicle_id"  groups="payroll_extra.group_benefit_manager" optional="hide"/>
+                </xpath>
+			</field>
+		</record>
+
+    </data>
+</odoo>
+

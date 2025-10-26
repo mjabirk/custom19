@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_overtime_bonus_user,overtime_bonus_user,model_overtime_bonus,base.group_user,1,1,1,0
+access_overtime_bonus_manager,overtime_bonus_manager,model_overtime_bonus,payroll_extra.group_benefit_manager,1,1,1,1
+access_overtime_bonus_payroll_manager,overtime_bonus_manager,model_overtime_bonus,hr_payroll.group_hr_payroll_manager,1,1,1,1
+access_overtime_bonus_type_user,overtime_bonus_type_user,model_overtime_bonus_type,base.group_user,1,0,0,0
+access_overtime_bonus_type_manager,overtime_bonus_type_manager,model_overtime_bonus_type,payroll_extra.group_benefit_manager,1,1,1,1
+access_overtime_bonus_type_payroll_manager,overtime_bonus_type_manager,model_overtime_bonus_type,hr_payroll.group_hr_payroll_manager,1,1,1,1

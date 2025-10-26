@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo noupdate="1">
+
+    <record id="group_hr_extra" model="res.groups">
+        <field name="name">HR Extra Access</field>
+        <field name="comment">Notice Period, Air Ticket etc in time-off.</field>
+    </record>
+
+    <record id="dpayroll_automation_multi_company" model="ir.rule">
+        <field name="name">Payroll Automation Multi Company Rule</field>
+        <field name="model_id" ref="model_payroll_automation"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', [False] + company_ids)]</field>
+    </record>
+
+</odoo>

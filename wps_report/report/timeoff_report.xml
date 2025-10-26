@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="timeoff_report_qweb">
+            <style>
+                .top_hide{
+                    border-top:hidden;
+                }
+                .show_borders_tr{
+                    border:1px solid #D0D0D0;
+                    padding: 1px 00px 1px 00px;
+                }
+                .show_borders_td{
+                    border:1px solid #D0D0D0;
+                    width:25%;
+                    text-align:center;
+                }
+            </style>
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="web.external_layout">
+                    <div class="page">
+                        <div><span  style='font-family:Georgia, Times, "Times New Roman", serif;font-size: 20px;'>Employee Name: <t t-esc="o.employee_id.name"/> </span></div>
+                        <div><span  style='font-size: 20px;'>Qatar ID: <t t-esc="o.employee_id.identification_id"/> </span></div>
+                        <br/><br/>
+                        <div><span  style='font-family:Georgia, Times, "Times New Roman", serif;font-size: 20px;'>Dear <t t-esc="o.employee_id.name"/> ,</span></div>
+                        <br/>
+                        <div><span  style='font-family:Georgia, Times, "Times New Roman", serif;font-size: 20px;'><h3><b>Subject: Termination of Employment</b></h3></span></div>
+                        <br/>
+                        <div><span  style='font-family:Georgia, Times, "Times New Roman", serif;font-size: 20px;'>
+                            This is to inform you that, regrettably, your employment with <t t-esc="o.employee_id.company_id.name"/> is terminated effective <t t-esc="o.request_date_from" t-options='{"widget": "date"}'/>.
+                        After careful consideration and review of the situation, the decision has been made to end your employment with the company<t t-if="o.add_description" > due to the reason mentioned below</t>.
+                        <br/>
+                        <t t-if="o.add_description"><b><i><t t-esc="o.name"/></i></b><br/></t></span></div><br/>
+                        <div><span  style='font-family:Georgia, Times, "Times New Roman", serif;font-size: 20px;'>
+                            As per our company policy, you will be granted a notice period of <t t-if="o.notice_period == 1" > one month</t><t t-if="o.notice_period &gt; 1" ><t t-esc="o.notice_period" /> Months</t>. Please be aware that you are required to return any company property, including keys, access cards, laptops, and any other materials in your possession.
+                        </span></div><br/>
+                        <div><span  style='font-family:Georgia, Times, "Times New Roman", serif;font-size: 20px;'>
+You will receive your final paycheck, which will include all benefits as per Qatar Labor Law.                         </span></div><br/>
+                        <div><span  style='font-family:Georgia, Times, "Times New Roman", serif;font-size: 20px;'>
+We expect you to respect the confidential information of the company and refrain from any disclosure or misuse of such information.
+                        </span></div><br/>
+                        <div><span  style='font-family:Georgia, Times, "Times New Roman", serif;font-size: 20px;'>
+We sincerely regret the circumstances that led to this decision, and we appreciate the contributions you have made during your time with <t t-esc="o.employee_id.company_id.name"/>. We wish you the best in your future endeavors.
+                        </span></div><br/>
+<div><span  style='font-family:Georgia, Times, "Times New Roman", serif;font-size: 20px;'>
+                        Yours sincerely,</span></div>
+ <br/>
+ <br/>
+<div><span  style='font-family:Georgia, Times, "Times New Roman", serif;font-size: 20px;'>
+                        HR</span></div>
+                        <br/><br/><br/>
+<div><span  style='font-family:Georgia, Times, "Times New Roman", serif;font-size: 20px;'>
+                        <t t-esc="o.employee_id.company_id.name"/></span></div>
+                    </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

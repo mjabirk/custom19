@@ -1,0 +1,25 @@
+# -*- coding: utf-8 -*-
+{
+    'name': 'Payroll Extra Benefits - Alkon',
+    'summary': 'Productivity records from Alkon',
+    'description': """Add option to record productivity from alkon raw data.""",
+    'version': '17.01',
+    'sequence': 1,
+    'email': 'info@misnedtech.com ',
+    'website':'',
+    'category': 'Human Resources/Attendances',
+    'author': 'Almisned Technology',
+    'price': 150,
+    'currency': 'EUR',
+    'license': 'OPL-1',
+    "live_test_url" : "",
+    'depends': ['payroll_extra'],
+    'qweb': [],
+    'data': [
+        'views/overtime_bonus.xml',],
+    'images': [],
+    'demo': [],
+    'installable': True,
+    'auto_install': False,
+    'application': False,
+}

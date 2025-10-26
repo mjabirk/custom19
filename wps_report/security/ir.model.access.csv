@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_salary_transfer_sheet,salary.transfer.sheet,model_salary_transfer_sheet,hr_payroll.group_hr_payroll_user,1,1,1,1
+access_payroll_automation,payroll.automation,model_payroll_automation,hr_payroll.group_hr_payroll_user,1,1,1,1

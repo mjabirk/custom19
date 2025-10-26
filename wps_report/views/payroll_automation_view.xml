@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+<odoo>
+    <record id="view_payroll_automation_form" model="ir.ui.view">
+        <field name="name">payroll.automation.form</field>
+        <field name="model">payroll.automation</field>
+        <field name="arch" type="xml">
+            <form string="Payroll Automation">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="batch_name"/>
+                        <field name="employee_department_ids" widget="many2many_tags"/>
+                        <field name="schedule_date"/>
+                        <field name="active"/>
+                        <field name="company_id" readonly="1" widget="selection"/>
+                        <field name="bank_list"/>
+                        <field name="email" widget="email"/>
+                        <field name="structure_id"/>
+                    </group>
+                    <button string="Generate Payslip Batch Now"
+                        type="object"
+                        name="action_trigger_payroll"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_payroll_automation_tree" model="ir.ui.view">
+        <field name="name">payroll.automation.tree</field>
+        <field name="model">payroll.automation</field>
+        <field name="arch" type="xml">
+            <list string="Payroll Automations">
+                <field name="name"/>
+                <field name="schedule_date"/>
+                <field name="last_created_date"/>
+                <field name="active"/>
+                <field name="bank_list"/>
+                <field name="email" />
+                <field name="company_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="payroll_automation_action" model="ir.actions.act_window">
+        <field name="name">Payroll Automations</field>
+        <field name="res_model">payroll.automation</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p>
+                Manage and automate payroll processes.
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_payroll_automation" name="Payroll Automations" parent="hr_payroll.menu_hr_salary_configuration"
+        action="payroll_automation_action" sequence="60"/>
+</odoo>
+
+</odoo>

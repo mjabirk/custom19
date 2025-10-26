@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="hr_contract_template_view_form" model="ir.ui.view">
+        <field name="name">hr.contract.template.view.form.inherit.l10_sa_hr_payroll</field>
+        <field name="inherit_id" ref="hr.hr_contract_template_form_view"/>
+        <field name="model">hr.version</field>
+        <field name="arch" type="xml">
+            <group name="salary_info" position="after">
+                <group string="Monthly Salary Breakdown" invisible="country_code != 'QA'">
+                    <!--
+                      LEFT COLUMN: Holds all the monthly salary components.
+                    -->
+                    <group string="Monthly Allowances" name="salary_breakdown">
+                        <field name="accommodation_allowance"
+                               widget="monetary"
+                               options="{'currency_field': 'currency_id'}"/>
+                        <field name="food_allowance"
+                               widget="monetary"
+                               options="{'currency_field': 'currency_id'}"/>
+                        <field name="transportation_allowance"
+                               widget="monetary"
+                               options="{'currency_field': 'currency_id'}"/>
+                        <field name="other_allowance"
+                               widget="monetary"
+                               options="{'currency_field': 'currency_id'}"/>
+
+                        <separator style="border-top: 1px solid #dee2e6;"/>
+                        <!--
+                          The total_salary field is styled 'oe_bold'
+                          to make it stand out.
+                        -->
+                        <label for="total_salary" class="oe_bold"/>
+                        <div class="o_row oe_bold">
+                            <field name="total_salary"
+                                   widget="monetary"
+                                   options="{'currency_field': 'currency_id'}"/>
+                        </div>
+                    </group>
+
+                    <!--
+                      RIGHT COLUMN: Holds benefits, settings, and accruals.
+                      This group itself is a container for sub-groups.
+                    -->
+                    <group string="Benefits &amp; Accrual Settings" name="benefits_accruals">
+                        <group string="Yearly Advantages">
+                            <field name="rp_charge"
+                                   widget="monetary"
+                                   options="{'currency_field': 'currency_id'}"/>
+                            <field name="air_ticket"
+                                   widget="monetary"
+                                   options="{'currency_field': 'currency_id'}"/>
+                        </group>
+                        <group string="Leave &amp; EOS Settings">
+                            <!--
+                              Using the label/div method to add units
+                              for clarity.
+                            -->
+                            <label for="leave_pay_days"/>
+                            <div class="o_row">
+                                <field name="leave_pay_days"/>
+                                <span>days / year</span>
+                            </div>
+
+                            <label for="eos_days"/>
+                            <div class="o_row">
+                                <field name="eos_days"/>
+                                <span>days / year</span>
+                            </div>
+
+                            <label for="leave_period"/>
+                            <div class="o_row">
+                                <field name="leave_period"/>
+                                <span>days</span>
+                            </div>
+                        </group>
+
+                        <group string="Daily Accrual Amounts">
+                            <!--
+                              These are computed fields, shown as read-only.
+                            -->
+                            <field name="leave_accrual_amount"
+                                   widget="monetary"
+                                   options="{'currency_field': 'currency_id'}"/>
+                            <field name="eos_accrual_amount"
+                                   widget="monetary"
+                                   options="{'currency_field': 'currency_id'}"/>
+                        </group>
+                    </group>
+                </group>
+            </group>
+        </field>
+    </record>
+</odoo>

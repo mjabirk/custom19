@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="salary_certificate_report">
+            <style>
+                .top_hide{
+                    border-top:hidden;
+                }
+                .show_borders_tr{
+                    border:1px solid #D0D0D0;
+                    padding: 1px 00px 1px 00px;
+                }
+                .show_borders_td{
+                    border:1px solid #D0D0D0;
+                    width:25%;
+                    text-align:center;
+                }
+            </style>
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="web.external_layout">
+                    <div class="page">
+                        <b><u><h1 align="center" >Salary Certificate</h1></u><br/>
+                        <div><span  style='font-family:Georgia, Times, "Times New Roman", serif;font-size: 20px;'>Date: <t   t-esc="context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d')"   t-options='{"widget": "date"}'/></span></div><br/>
+                            <div><span  style='font-family:Georgia, Times, "Times New Roman", serif;font-size: 20px;'><u>To Whom It May Concern</u></span></div><br/></b>
+<!--                        <div><span  style='font-size: 20px;'>Qatar ID: <t t-esc="o.employee_id.identification_id"/> </span></div>-->
+<!--                        <br/><br/>-->
+<!--                        <div><span  style='font-family:Georgia, Times, "Times New Roman", serif;font-size: 20px;'>Dear <t t-esc="o.employee_id.name"/> ,</span></div>-->
+<!--                        <br/>-->
+<!--                        <div><span  style='font-family:Georgia, Times, "Times New Roman", serif;font-size: 20px;'><h3><b>Subject: Termination of Employment</b></h3></span></div>-->
+                        <br/>
+                        <div><span  style='font-family:Georgia, Times, "Times New Roman", serif;font-size: 20px;'>
+                            This is to certify that <t t-esc="o.employee_id.name"/> the holder of <t t-esc="o.employee_id.country_id.name"/> passport with number <t t-esc="o.employee_id.passport_id"/>  and Qatar ID NO:
+                            <t t-esc="o.employee_id.identification_id"/> is working in <t t-esc="o.employee_id.company_id.name"/> P.O. Box No:31616 Doha-Qatar as
+                            <t t-esc="o.employee_id.job_title"/> Since  <t t-esc="o.employee_id.joining_date" t-options='{"widget": "date"}'/> &amp; is Earning a Monthly salary of
+                            <t t-esc="o.wage+o.accommodation_allowance+o.food_allowance+o.transportation_allowance+o.other_allowance" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>.
+                        </span></div>
+                            <br/>
+                            <br/>
+                        <div ><span  style='font-family:Georgia, Times, "Times New Roman", serif;font-size: 20px;'>
+                         Note: This Certificate is issued upon employee's request without any liability on <t t-esc="o.employee_id.company_id.name"/></span></div><br/><br/>
+<b><div><span  style='font-family:Georgia, Times, "Times New Roman", serif;font-size: 20px;'>
+                        Yours sincerely,</span></div>
+ <br/>
+<div><span  style='font-family:Georgia, Times, "Times New Roman", serif;font-size: 20px;'>
+                        HR</span></div>
+                        <br/><br/><br/>
+                            <br/>
+<div><span  style='font-family:Georgia, Times, "Times New Roman", serif;font-size: 20px;'>
+                        <t t-esc="o.employee_id.company_id.name"/></span></div>
+                        </b>
+                    </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+
+        <template id="salary_certificate_report_TB">
+             <style>
+                .top_hide{
+                    border-top:hidden;
+                }
+                .show_borders_tr{
+                    border:1px solid #D0D0D0;
+                    padding: 1px 00px 1px 00px;
+                }
+                .show_borders_td{
+                    border:1px solid #D0D0D0;
+                    width:25%;
+                    text-align:center;
+                }
+            </style>
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="web.external_layout">
+                    <div class="page">
+                        <b><u><h1 align="center">Salary Certificate</h1></u><br/>
+                        <div><span style="font-family:Georgia, Times, &quot;Times New Roman&quot;, serif;font-size: 20px;">Date: <t t-esc="context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d')" t-options="{&quot;widget&quot;: &quot;date&quot;}"/></span></div><br/>
+                            <div><span style="font-family:Georgia, Times, &quot;Times New Roman&quot;, serif;font-size: 20px;"><u>To <t t-esc="o.employee_id.bank_account_id.bank_id.name"/></u></span></div><br/></b>
+<!--                        <div><span  style='font-size: 20px;'>Qatar ID: <t t-esc="o.employee_id.identification_id"/> </span></div>-->
+<!--                        <br/><br/>-->
+<!--                        <div><span  style='font-family:Georgia, Times, "Times New Roman", serif;font-size: 20px;'>Dear <t t-esc="o.employee_id.name"/> ,</span></div>-->
+<!--                        <br/>-->
+<!--                        <div><span  style='font-family:Georgia, Times, "Times New Roman", serif;font-size: 20px;'><h3><b>Subject: Termination of Employment</b></h3></span></div>-->
+                        <br/>
+                        <div><span style="font-family:Georgia, Times, &quot;Times New Roman&quot;, serif;font-size: 20px;">
+                            This is to certify that <t t-esc="o.employee_id.name"/> the holder of <t t-esc="o.employee_id.country_id.name"/> passport with number <t t-esc="o.employee_id.passport_id"/>  and Qatar ID NO:
+                            <t t-esc="o.employee_id.identification_id"/> is working in <t t-esc="o.employee_id.company_id.name"/> P.O. Box No:31616 Doha-Qatar as
+                            <t t-esc="o.employee_id.job_title"/> Since  <t t-esc="o.employee_id.joining_date" t-options="{&quot;widget&quot;: &quot;date&quot;}"/> &amp; is Earning a Monthly salary of
+                            <t t-esc="o.wage+o.accommodation_allowance+o.food_allowance+o.transportation_allowance+o.other_allowance" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}"/>.
+                        </span></div>
+                            <br/>
+                            <br/>
+                        <div><span style="font-family:Georgia, Times, &quot;Times New Roman&quot;, serif;font-size: 20px;">
+                         Note: This Certificate is issued upon employee's request without any liability on <t t-esc="o.employee_id.company_id.name"/></span></div><br/><br/>
+<b><div><span style="font-family:Georgia, Times, &quot;Times New Roman&quot;, serif;font-size: 20px;">
+                        Yours sincerely,</span></div>
+ <br/>
+<div><span style="font-family:Georgia, Times, &quot;Times New Roman&quot;, serif;font-size: 20px;">
+                        HR</span></div>
+                        <br/><br/><br/>
+                            <br/>
+<div><span style="font-family:Georgia, Times, &quot;Times New Roman&quot;, serif;font-size: 20px;">
+                        <t t-esc="o.employee_id.company_id.name"/></span></div>
+                        </b>
+                    </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

@@ -1,0 +1,28 @@
+# -*- coding: utf-8 -*-
+{
+    'name': 'Payroll Extra Benefits',
+    'summary': 'Overtime and Bonus record',
+    'description': """Add option to record Overtime and Bonus with approval option and use it in payslip.""",
+    'version': '17.01',
+    'sequence': 1,
+    'email': 'info@misnedtech.com ',
+    'website':'',
+    'category': 'Human Resources/Attendances',
+    'author': 'Almisned Technology',
+    'price': 150,
+    'currency': 'EUR',
+    'license': 'OPL-1',
+    "live_test_url" : "",
+    'depends': ['hr_payroll',
+                'hr_attendance'],
+    'qweb': [],
+    'data': [
+        'security/payroll_extra_security.xml',
+        'security/ir.model.access.csv',
+        'views/overtime_bonus.xml',],
+    'images': [],
+    'demo': [],
+    'installable': True,
+    'auto_install': False,
+    'application': False,
+}

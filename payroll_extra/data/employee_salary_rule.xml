@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="ot_rule_id" model="hr.salary.rule">
+        <field name="category_id" ref="hr_payroll.ALW"/>
+        <field name="name">Overtime </field>
+        <field name="code">OT</field>
+        <field name="sequence">14</field>
+        <field name="condition_select">none</field>
+        <field name="condition_python"></field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">DAYS_PER_MONTH = 365.0 / 12
+WORKING_TIME = 8
+rate = contract.wage / DAYS_PER_MONTH / WORKING_TIME
+overtime_line_ids = employee.overtime_line_ids.search([('employee_id','=',employee.id),('date_from', '>=', payslip.date_from), ('date_from', '<=', payslip.date_to),('type','=','overtime'),('state','=','approved'),])
+tot_hours = 0
+for ot in overtime_line_ids :
+    tot_hours  += ot.duration
+result = round((worked_days.OT and worked_days.OT.number_of_hours*rate or 0) + (inputs.OT and inputs.OT.amount or 0) + tot_hours *rate )</field>
+        <field name="struct_id" ref="l10n_be_hr_payroll.hr_payroll_structure_cp200_employee_salary"/>
+    </record>
+
+    <record id="bonus_rule_id" model="hr.salary.rule">
+        <field name="category_id" ref="hr_payroll.ALW"/>
+        <field name="name">Bonus </field>
+        <field name="code">BONUS</field>
+        <field name="sequence">15</field>
+        <field name="condition_select">none</field>
+        <field name="condition_python"></field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">overtime_line_ids = employee.overtime_line_ids.search([('employee_id','=',employee.id),('date_from', '>=', payslip.date_from), ('date_from', '<=', payslip.date_to),('type','=','bonus'),('state','=','approved'),])
+tot_amount  = 0
+for ot in overtime_line_ids :
+    tot_amount  += ot.amount
+result = round(tot_amount)</field>
+        <field name="struct_id" ref="l10n_be_hr_payroll.hr_payroll_structure_cp200_employee_salary"/>
+    </record>
+
+</odoo>
