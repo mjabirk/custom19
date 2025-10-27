@@ -1,5 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+
+    <!-- Hr employee inherit Legal Leaves -->
+    <record id="view_employee_form_wps_inherit" model="ir.ui.view">
+        <field name="name">hr.employee.leave.form.wps.inherit</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="priority" eval="30"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='managers']" position="inside">
+                <field name="wps_sponsor_id"/>
+            </xpath>
+        </field>
+    </record>
     <record id="hr_employee_view_form" model="ir.ui.view">
         <field name="name">hr.employee.view.form</field>
         <field name="model">hr.employee</field>
@@ -10,7 +23,6 @@
                     <!--
                       LEFT COLUMN: Holds all the monthly salary components.
                     -->
-                    <field name="wps_sponsor_id"/>
                     <group string="Monthly Allowances" name="salary_breakdown">
                         <field name="accommodation_allowance"
                                widget="monetary"

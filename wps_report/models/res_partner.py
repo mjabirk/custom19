@@ -8,12 +8,13 @@
 ##############################################################################
 
 from odoo import api, fields, models
-from datetime import datetime, timedelta
 
 class Partner(models.Model):
     _inherit = 'res.partner'
-
-    employer_eid = fields.Char('Employer EID.', size=8)
-    payer_eid = fields.Char(' Payer EID.', size=8)
-    payer_qid = fields.Char('Payer QID.', size=11)
-    additional_header = fields.Char('Additional Header', size=64,help='Additional Header for HSBC Bank. Add entires in coma seperated format. Eg:QAWPS,ABC19361001,P,R%m%M,%y%m%d,W01')
+    wps_sponsor_id = fields.Many2one(
+        'hr.wps.sponsor',
+        string="WPS Sponsor",
+        ondelete='restrict',  # Prevents deleting a sponsor if partners are linked
+        tracking=True,
+        help="Sponsor responsible for the employee's WPS salary transfer."
+    )

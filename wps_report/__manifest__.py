@@ -17,7 +17,7 @@
         # 'security/wps_report.xml',
         'wizard/payroll_transfer_sheet_view.xml',
         # 'views/hr_payslip_views.xml',
-        # 'views/res_partner_views.xml',
+        'views/res_partner_views.xml',
         # 'views/hr_contract_views.xml',
          'views/hr_employee_views.xml',
         'views/hr_contract_template_views.xml',

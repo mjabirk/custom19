@@ -9,10 +9,7 @@
             <field name="arch" type="xml">
                 <xpath expr="//page[@name='sales_purchases']" position="inside">
                     <group string="Payroll">
-                        <field name="employer_eid"/>
-                        <field name="payer_eid"/>
-                        <field name="payer_qid" />
-                        <field name="additional_header" />
+                        <field name="wps_sponsor_id"/>
                     </group>
                 </xpath>
             </field>

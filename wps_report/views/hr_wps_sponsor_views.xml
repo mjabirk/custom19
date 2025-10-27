@@ -28,9 +28,12 @@
 
                     <group>
                         <group string="WPS Identification">
+                            <field name="bank_account_id"/>
                             <field name="employer_eid"/>
                             <field name="payer_eid"/>
                             <field name="payer_qid"/>
+                            <field name="additional_header"/>
+
                         </group>
                         <group string="Computed Info">
                             <field name="display_name" string="Full Display Name"/>

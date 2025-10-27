@@ -25,6 +25,7 @@ class HrWpsSponsor(models.Model):
         compute='_compute_display_name',
         store=True
     )
+    bank_account_id = fields.Many2one('res.partner.bank',  string="Bank Account", required=True)
 
     employer_eid = fields.Char(string="Employer EID")
     payer_eid = fields.Char(string="Payer EID")
@@ -41,7 +42,7 @@ class HrWpsSponsor(models.Model):
         compute='_compute_employee_count',
         string="Employee Count"
     )
-
+    additional_header = fields.Char('Additional Header', size=64,help='Additional Header for HSBC Bank. Add entires in coma seperated format. Eg:QAWPS,ABC19361001,P,R%m%M,%y%m%d,W01')
     _sql_constraints = [
         ('partner_id_uniq', 'unique(partner_id)',
          'A contact (partner) can only be linked to one WPS Sponsor record.')
