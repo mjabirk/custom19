@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="hr_payslip_run_view_kanban_wps_inherit" model="ir.ui.view">
+        <field name="name">hr.payslip.run.wps.inherit.kanban</field>
+        <field name="model">hr.payslip.run</field>
+        <field name="inherit_id" ref="hr_payroll.hr_payslip_run_view_kanban"/>
+        <field name="arch" type="xml">
+            <button name='action_validate' position="after">
+                <button name="%(action_salary_transfer_sheet)d" type='action' string='Generate Transfer Sheet' invisible="state == 'draft'" />
+            </button>
+        </field>
+    </record>
+</odoo>

@@ -15,13 +15,14 @@
     'data': [
         # 'security/ir.model.access.csv',
         # 'security/wps_report.xml',
-        # 'wizard/payroll_transfer_sheet_view.xml',
+        'wizard/payroll_transfer_sheet_view.xml',
         # 'views/hr_payslip_views.xml',
         # 'views/res_partner_views.xml',
         # 'views/hr_contract_views.xml',
          'views/hr_employee_views.xml',
         'views/hr_contract_template_views.xml',
         'views/hr_wps_sponsor_views.xml',
+        'views/hr_payslip_run_views.xml'
         # 'views/hr_leave_views.xml',
         # 'views/payroll_automation_view.xml',
         # 'report/timeoff_report.xml',
