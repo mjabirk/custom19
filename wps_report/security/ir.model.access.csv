@@ -1,4 +1,5 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_salary_transfer_sheet,salary.transfer.sheet,model_salary_transfer_sheet,hr_payroll.group_hr_payroll_user,1,1,1,1
-access_payroll_automation,payroll.automation,model_payroll_automation,hr_payroll.group_hr_payroll_user,1,1,1,1
-access_hr_wps_sponsor,hr.wps.sponsor.user,model_hr_wps_sponsor,hr.group_hr_user,1,1,1,1
+access_hr_wps_sponsor,hr.wps.sponsor.user,model_hr_wps_sponsor,hr_payroll.group_hr_payroll_user,1,1,1,1
+access_salary_transfer_sheet_manager,salary.transfer.sheet.manager,model_salary_transfer_sheet,hr_payroll.group_hr_payroll_manager,1,1,1,1
+access_hr_wps_sponsor_manager,hr.wps.sponsor.manager,model_hr_wps_sponsor,hr_payroll.group_hr_payroll_manager,1,1,1,1

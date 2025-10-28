@@ -250,10 +250,8 @@ class SalaryTransferSheet(models.TransientModel):
 
         zip_buffer = io.BytesIO()
         files_generated = 0
-
         with zipfile.ZipFile(zip_buffer, 'a', zipfile.ZIP_DEFLATED, False) as zip_file:
             for sponsor, slips in grouped_slips.items():
-                print(sponsor, slips,'===================')
                 # Get the bank format from the sponsor partner
                 # This requires the 'wps_bank_format' field on res.partner
 
@@ -264,7 +262,6 @@ class SalaryTransferSheet(models.TransientModel):
                         f"WPS SIF generation skipped for sponsor {sponsor.partner_id.name} (ID: {sponsor.id}) "
                         f"due to missing bank account on their partner record."
                     )
-                    print('continuinggggg.......',sponsor)
                     continue
 
                 # Generate the file for this group
@@ -275,7 +272,6 @@ class SalaryTransferSheet(models.TransientModel):
                 if file_name and file_content:
                     zip_file.writestr(file_name, file_content)
                     files_generated += 1
-                print(files_generated,'--------------files_generated')
 
         if files_generated == 0:
             raise UserError(

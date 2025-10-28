@@ -13,7 +13,7 @@
     'depends': ['hr_payroll',
                 'hr_holidays'],
     'data': [
-        # 'security/ir.model.access.csv',
+        'security/ir.model.access.csv',
         # 'security/wps_report.xml',
         'wizard/payroll_transfer_sheet_view.xml',
         # 'views/hr_payslip_views.xml',
