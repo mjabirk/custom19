@@ -48,7 +48,6 @@ class HrVersion(models.Model):
                 "transportation_allowance",
                 "other_allowance",
                 "rp_charge",
-                "air_ticket",
                 "leave_pay_days",
                 "eos_days",
                 "leave_period",

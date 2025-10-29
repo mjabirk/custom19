@@ -46,9 +46,6 @@
                             <field name="rp_charge"
                                    widget="monetary"
                                    options="{'currency_field': 'currency_id'}"/>
-                            <field name="air_ticket"
-                                   widget="monetary"
-                                   options="{'currency_field': 'currency_id'}"/>
                         </group>
                         <group string="Leave &amp; EOS Settings">
                             <!--
