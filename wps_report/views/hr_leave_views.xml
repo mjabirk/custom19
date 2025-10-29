@@ -7,8 +7,8 @@
         <field name="inherit_id" ref="hr_holidays.hr_leave_view_form_manager"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='name']" position="after">
-                <field name="notice_period"  />
-                <field name="add_description" />
+<!--                <field name="notice_period"  />-->
+<!--                <field name="add_description" />-->
                 <field name="air_ticket" />
             </xpath>
         </field>
