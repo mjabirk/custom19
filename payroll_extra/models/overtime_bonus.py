@@ -9,7 +9,7 @@ _logger = logging.getLogger(__name__)
 
 class OvertimeBonusType(models.Model):
     _name = 'overtime.bonus.type'
-    _inherit = ['mail.thread', 'mail.activity.mixin', 'analytic.mixin']
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _description = "Overtime Bonus Types"
 
     name = fields.Char(string='Name')
@@ -19,7 +19,7 @@ class OvertimeBonusType(models.Model):
 class OvertimeBonus(models.Model):
     _name = 'overtime.bonus'
     _description = "Overtime Bonus"
-    _inherit = ['mail.thread', 'mail.activity.mixin', 'analytic.mixin']
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = "date_from desc, id desc"
 
     name = fields.Char(string='Description', tracking=True, required=True,)#states={'approved': [('readonly', True)], 'rejected': [('readonly', True)]}
@@ -48,8 +48,8 @@ class OvertimeBonus(models.Model):
         DAYS_PER_MONTH = 365.0 / 12
         WORKING_TIME = 8
         for rec in self:
-            if rec.type == 'overtime' and rec.employee_id.contract_id:
-                rec.ot_amount = rec.employee_id.contract_id.wage / DAYS_PER_MONTH / WORKING_TIME * rec.duration
+            if rec.type == 'overtime' and rec.employee_id.version_id:
+                rec.ot_amount = rec.employee_id.version_id.wage / DAYS_PER_MONTH / WORKING_TIME * rec.duration
             elif rec.type == 'bonus':
                 rec.ot_amount = rec.amount
             elif rec.type == 'productivity':
@@ -122,18 +122,18 @@ class HrEmployee(models.Model):
 
     overtime_line_ids = fields.One2many('overtime.bonus', 'employee_id', string='Overtime')
 
-class HrPayslipEmployees(models.TransientModel):
-    _inherit = 'hr.payslip.employees'
-
-    def _filter_contracts(self, contracts):
-        contracts = super()._filter_contracts(contracts)
-        payslip_run = self.env['hr.payslip.run'].browse(self.env.context.get('active_id'))
-        for employee_id in self.employee_ids:
-            if self.env['overtime.bonus'].search([('employee_id', '=', employee_id.id),
-                                                  ('date_from', '>=', payslip_run.date_start),
-                                                  ('date_from', '<=', payslip_run.date_end),
-                                                  ('state','=','draft')]):
-                raise UserError(_("Please review and either approve or reject the draft overtime entries prior to generating the payslip."))
-        return contracts
+# class HrPayslipEmployees(models.TransientModel):
+#     _inherit = 'hr.payslip.employees'
+#
+#     def _filter_contracts(self, contracts):
+#         contracts = super()._filter_contracts(contracts)
+#         payslip_run = self.env['hr.payslip.run'].browse(self.env.context.get('active_id'))
+#         for employee_id in self.employee_ids:
+#             if self.env['overtime.bonus'].search([('employee_id', '=', employee_id.id),
+#                                                   ('date_from', '>=', payslip_run.date_start),
+#                                                   ('date_from', '<=', payslip_run.date_end),
+#                                                   ('state','=','draft')]):
+#                 raise UserError(_("Please review and either approve or reject the draft overtime entries prior to generating the payslip."))
+#         return contracts
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

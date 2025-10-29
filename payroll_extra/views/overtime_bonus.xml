@@ -18,11 +18,7 @@
 							<group/>
 						</group>
 					</sheet>
-					<div class="oe_chatter">
-						<field name="message_follower_ids" widget="mail_followers"/>
-						<field name="activity_ids" widget="mail_activity"/>
-						<field name="message_ids" widget="mail_thread"/>
-					</div>
+					<chatter/>
 				</form>
 			</field>
 		</record>
@@ -53,42 +49,36 @@
 			<field name="name">overtime.bonus.form</field>
 			<field name="model">overtime.bonus</field>
 			<field name="arch" type="xml">
-				<form string="Overtime">
-					<sheet>
+			   <form string="Overtime">
+				  <sheet>
+					 <group>
 						<group>
-							<group>
-								<field name="company_currency_id" invisible="1"/>
-								<field name="date_from" />
-								<field name="name" />
-								<field name="type"  invisible="1"/>
-								<field name="employee_id" />
-								<field name="type_id"   widget="selection"/>
-								<field name="duration" widget="float_time" readonly="state != 'draft' or type != 'overtime'" string="Duration"/>
-								<field name="amount"  widget="monetary" options="{'currency_field': 'company_currency_id'}" readonly="state != 'draft' or type == 'overtime'" />
-								<field name="state" />
-								<br/>
-								<field name="notes" nolabel="1" colspan="4"/>
-							</group>
-							<group>
-								<button name="button_approve" type="object" string="Approve" class="btn-success" invisible="state in ('approved', 'rejected')"   groups="payroll_extra.group_benefit_manager"/>
-								<button name="button_reject" type="object" string="Reject" class="btn-danger" invisible="state in ('approved', 'rejected')"  groups="payroll_extra.group_benefit_manager"/>
-								<button name="set_to_draft" type="object" string="Set to Draft" class="btn-warning" invisible="state == 'draft'" groups="payroll_extra.group_benefit_manager"/>
-
-							</group>
-							<group/>
+						   <field name="company_currency_id" invisible="1"/>
+						   <field name="date_from" />
+						   <field name="name" />
+						   <field name="type"  invisible="1"/>
+						   <field name="employee_id" />
+						   <field name="type_id"   widget="selection"/>
+						   <field name="duration" widget="float_time" readonly="state != 'draft' or type != 'overtime'" string="Duration"/>
+						   <field name="amount"  widget="monetary" options="{'currency_field': 'company_currency_id'}" readonly="state != 'draft' or type == 'overtime'" />
+						   <field name="state" />
+						   <br/>
+						   <field name="notes" nolabel="1" colspan="4"/>
 						</group>
-					</sheet>
-					<div class="oe_chatter">
-						<field name="message_follower_ids" widget="mail_followers"/>
-						<field name="activity_ids" widget="mail_activity"/>
-						<field name="message_ids" widget="mail_thread"/>
-					</div>
-				</form>
+						<group>
+						   <button name="button_approve" type="object" string="Approve" class="btn-success" invisible="state in ('approved', 'rejected')"   groups="payroll_extra.group_benefit_manager"/>
+						   <button name="button_reject" type="object" string="Reject" class="btn-danger" invisible="state in ('approved', 'rejected')"  groups="payroll_extra.group_benefit_manager"/>
+						   <button name="set_to_draft" type="object" string="Set to Draft" class="btn-warning" invisible="state == 'draft'" groups="payroll_extra.group_benefit_manager"/>
+						</group>
+						<group/>
+					 </group>
+				  </sheet>
+				  <chatter/>
+			   </form>
 			</field>
 		</record>
-		
 		<record model="ir.ui.view" id="view_overtime_bonus_tree">
-			<field name="name">overtime.bonus.tree</field>
+			<field name="name">overtime.bonus.list</field>
 			<field name="model">overtime.bonus</field>
 			<field name="arch" type="xml">
 				<list string="Overtime"  editable="top" decoration-danger="state=='rejected'"  decoration-info="state=='draft'" decoration-muted="state=='approved'">
@@ -116,40 +106,39 @@
 			</field>
 		</record>
 
-		<record id="view_overtime_bonus_search" model="ir.ui.view">
-			<field name="name">Overtime Search</field>
-			<field name="model">overtime.bonus</field>
-			<field name="arch" type="xml">
-				<search string="Search Overtime">
-					<field name="name"/>
-					<field name="employee_id"/>
-					<filter name="my_ot" string="Created by Me" domain="[('create_uid', '=',uid)]"/>
-					<separator/>
-					<filter name="toapprove" string="To Approve" domain="[('state','=','draft')]"/>
-					<filter name="rejected" string="Rejected" domain="[('state','=','rejected')]"/>
-					<filter name="approved" string="Approved" domain="[('state','=','approved')]"/>
-					<separator/>
-					<filter name="bonus" string="Bonus" domain="[('type','=','bonus')]"/>
-					<filter name="ot" string="Overtime" domain="[('type','=','overtime')]"/>
+<!--		<record id="view_overtime_bonus_search" model="ir.ui.view">-->
+<!--			<field name="name">Overtime Search</field>-->
+<!--			<field name="model">overtime.bonus</field>-->
+<!--			<field name="arch" type="xml">-->
+<!--				<search string="Search Overtime">-->
+<!--					<field name="name"/>-->
+<!--					<field name="employee_id"/>-->
+<!--					<filter name="my_ot" string="Created by Me" domain="[('create_uid', '=',uid)]"/>-->
+<!--					<separator/>-->
+<!--					<filter name="toapprove" string="To Approve" domain="[('state','=','draft')]"/>-->
+<!--					<filter name="rejected" string="Rejected" domain="[('state','=','rejected')]"/>-->
+<!--					<filter name="approved" string="Approved" domain="[('state','=','approved')]"/>-->
+<!--					<separator/>-->
+<!--					<filter name="bonus" string="Bonus" domain="[('type','=','bonus')]"/>-->
+<!--					<filter name="ot" string="Overtime" domain="[('type','=','overtime')]"/>-->
 
-					<group expand="0" string="Group By...">
-						<filter string="Date" name="date_groupby" domain="[]" context="{'group_by':'date_from'}" />
-						<filter string="Employee" name="employee_groupby" domain="[]" context="{'group_by':'employee_id'}"/>
-						<filter string="Type" name="type_groupby" domain="[]" context="{'group_by':'type_id'}"/>
-						<filter string="Status" name="status_groupby" domain="[]" context="{'group_by':'state'}"/>
-						<filter string="Company" name="company_groupby" domain="[]" context="{'group_by':'company_id'}" />
-						<filter string="Department" name="department_groupby" domain="[]" context="{'group_by':'department_id'}" />
-						<filter string="Job" name="job_groupby" domain="[]" context="{'group_by':'job_id'}" />
-					</group>
-				</search>
-			</field>
-		</record>
+<!--					<group expand="0" string="Group By...">-->
+<!--						<filter string="Date" name="date_groupby" domain="[]" context="{'group_by':'date_from'}" />-->
+<!--						<filter string="Employee" name="employee_groupby" domain="[]" context="{'group_by':'employee_id'}"/>-->
+<!--						<filter string="Type" name="type_groupby" domain="[]" context="{'group_by':'type_id'}"/>-->
+<!--						<filter string="Status" name="status_groupby" domain="[]" context="{'group_by':'state'}"/>-->
+<!--						<filter string="Company" name="company_groupby" domain="[]" context="{'group_by':'company_id'}" />-->
+<!--						<filter string="Department" name="department_groupby" domain="[]" context="{'group_by':'department_id'}" />-->
+<!--						<filter string="Job" name="job_groupby" domain="[]" context="{'group_by':'job_id'}" />-->
+<!--					</group>-->
+<!--				</search>-->
+<!--			</field>-->
+<!--		</record>-->
 
 		<record id="action_overtime_bonus" model="ir.actions.act_window">
 			<field name="name">Overtime</field>
 			<field name="res_model">overtime.bonus</field>
 			<field name="view_mode">list,form</field>
-            <field name="search_view_id" ref="view_overtime_bonus_search"/>
 			<field name="help">Overtime and Bonus</field>
 		</record>
 
@@ -158,12 +147,12 @@
 			<field name="type">ir.actions.act_window</field>
 			<field name="res_model">overtime.bonus</field>
 			<field name="view_mode">form</field>
-			<field name="target">inline</field>
+			<field name="target">current</field>
 			<field name="view_id" ref="view_overtime_bonus_form"/>
 		</record>
 
 
-		<menuitem parent="menu_overtime_bonus_root"  id="menu_overtime_bonus" name="Incentives" action="action_overtime_bonus"  sequence="3" />
+			<menuitem parent="menu_overtime_bonus_root"  id="menu_overtime_bonus" name="Incentives" action="action_overtime_bonus"  sequence="3" />
 
     </data>
 </odoo>

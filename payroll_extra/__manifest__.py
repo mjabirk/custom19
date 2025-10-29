@@ -14,7 +14,8 @@
     'license': 'OPL-1',
     "live_test_url" : "",
     'depends': ['hr_payroll',
-                'hr_attendance'],
+                'hr_attendance',
+                'mail'],
     'qweb': [],
     'data': [
         'security/payroll_extra_security.xml',
