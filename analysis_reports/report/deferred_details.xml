@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<template id="deferred_details_qweb">
+    <t t-call="web.html_container">
+<!--        <t t-foreach="partner_data" t-as="dat">-->
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <h2 class="text-center mb-0 m-0">Deferred Expenses Details</h2>
+                    <div class="row">
+                        <div class="col-7">
+<!--                            <div><b>To,</b></div>-->
+<!--                            <div t-esc="dat[0]" t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}' />-->
+                        </div>
+                        <div class="col-5">
+                            <span class="text-right">
+                                 <p>Date:<t t-esc="form['date']"/></p>
+                            </span>
+                        </div>
+                    </div><br/>
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th width="100"><strong>Date</strong></th>
+                                <th width="150"><strong>Bill</strong></th>
+                                <th><strong>Description</strong></th>
+                                <th class="text-end"><strong>Original Value</strong></th>
+                                <th class="text-end"><strong>Depreciation</strong></th>
+                                <th class="text-end"><strong>Balance</strong></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-set="tot_bal" t-value="0"/>
+                            <tr t-foreach="deferred_expenses" t-as="line">
+                                <td><span t-esc="line['date']"/></td>
+                                <td><span t-esc="line['related_entry']"/></td>
+                                <td><span t-esc="line['description']"/></td>
+                                <td class="text-end" t-esc="line['original']" t-options='{"widget": "float", "decimal_precision": "Volume"}'/>
+                                <td class="text-end" t-esc="line['depreciation']" t-options='{"widget": "float", "decimal_precision": "Volume"}'/>
+                                <td class="text-end" t-esc="line['balance']" t-options='{"widget": "float", "decimal_precision": "Volume"}'/>
+                                <t t-set="tot_bal" t-value="tot_bal + line['balance']"/>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                 <td style="font-weight: bold;">TOTAL</td>
+                                <td class="text-end" style="font-weight: bold;" t-esc="tot_bal" t-options='{"widget": "float", "decimal_precision": "Volume"}'/>
+                            </tr>
+                        </tbody>
+<!--                        <tfoot t-if="tot_bal">-->
+<!--                            <tr>-->
+<!--                                <td style="font-weight: bold;">TOTAL</td>-->
+<!--                                <td class="text-end" style="font-weight: bold;" t-esc="tot_bal" t-options='{"widget": "float", "decimal_precision": "Product Unit of Measure"}'/>-->
+<!--                            </tr>-->
+<!--                        </tfoot>-->
+
+                    </table>
+                    <br/>
+                </div>
+            </t>
+<!--        </t>-->
+    </t>
+</template>
+</odoo>

@@ -1,0 +1,86 @@
+<odoo>
+	<data>
+
+		<!-- Attendance Machine Configuration -->
+		<record model="ir.ui.view" id="view_woqod_raw_data_form">
+			<field name="name">woqod.raw.data.form</field>
+			<field name="model">woqod.raw.data</field>
+			<field name="arch" type="xml">
+				<form string="Woqod Raw Data">
+					<group>
+						<group>
+							<field name="name" />
+							<field name="date" />
+							<field name="license_plate" />
+							<field name="product_name" />
+                    		<separator string="" colspan="4"/>
+							<field name="total_amount" />
+							<field name="unit_price" />
+							<field name="total_amount" />
+							<field name="liter" />
+							<field name="processed" />
+							<field name="vehicle_service_id" />
+                    		<separator string="" colspan="4"/>
+							<field name="notes"  colspan="3" nolabel="1"/>
+						</group>
+						<group/>
+					</group>
+				</form>
+			</field>
+		</record>
+		
+		<record model="ir.ui.view" id="view_woqod_raw_data_tree">
+			<field name="name">woqod.raw.data.tree</field>
+			<field name="model">woqod.raw.data</field>
+			<field name="arch" type="xml">
+				<list string="Woqod Raw Data">
+					<field name="name" />
+					<field name="date" />
+					<field name="license_plate" />
+					<field name="product_name" />
+					<field name="total_amount" />
+					<field name="unit_price" />
+					<field name="total_amount" />
+					<field name="liter" />
+					<field name="processed" />
+				</list>
+			</field>
+		</record>
+		
+		<record id="action_woqod_raw_data" model="ir.actions.act_window">
+			<field name="name">Woqod Raw Data</field>
+			<field name="res_model">woqod.raw.data</field>
+			<field name="view_mode">list,form</field>
+			<field name="help">Woqod Raw Data</field>
+		</record>
+
+		<menuitem parent="fleet.fleet_vehicles"  id="menu_woqod_raw_data" name="Woqod Raw Data" action="action_woqod_raw_data"  sequence="100" />
+
+
+		<record id="fleet_vehicle_view_form_inherit" model="ir.ui.view">
+			<field name="name">fleet.vehicle.form.inherit.woqod</field>
+			<field name="model">fleet.vehicle</field>
+			<field name="inherit_id" ref="fleet.fleet_vehicle_view_form"/>
+			<field name="arch" type="xml">
+				<xpath expr="//field[@name='model_year']" position='after'>
+					<field name="woqod_number"/>
+				</xpath>
+			</field>
+		</record>
+
+		<record id="fleet_vehicle_log_services_view_form_inherit_woqod" model="ir.ui.view">
+			<field name="name">fleet.vehicle.log.services.form.inherit.woqod</field>
+			<field name="model">fleet.vehicle.log.services</field>
+			<field name="inherit_id" ref="fleet.fleet_vehicle_log_services_view_form"/>
+			<field name="arch" type="xml">
+				<xpath expr="//field[@name='purchaser_id']" position="after">
+					<field name="starting_time" />
+                    <field name="quantity" />
+				</xpath>
+
+			</field>
+		</record>
+
+	</data>
+</odoo>
+

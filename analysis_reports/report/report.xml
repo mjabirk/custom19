@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+
+        <record id="action_report_consumption" model="ir.actions.report">
+            <field name="name">Consumption Comparison</field>
+            <field name="model">consumption.analysis.wiz</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">productivity_report.report_consumption_analysis</field>
+            <field name="report_file">productivity_report.report_consumption_analysis</field>
+            <field name="binding_model_id" ref="model_consumption_analysis_wiz"/>
+            <field name="binding_type">report</field>
+        </record>
+
+</odoo>

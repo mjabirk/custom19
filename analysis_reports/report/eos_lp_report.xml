@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<template id="eos_lp_report">
+    <t t-call="web.html_container">
+<!--        <t t-foreach="partner_data" t-as="dat">-->
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <h2 class="text-center mb-0 m-0">Accumulated End of Service and Leave Pay</h2>
+                    <div class="row">
+                        <div class="col-7">
+<!--                            <div><b>To,</b></div>-->
+<!--                            <div t-esc="dat[0]" t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}' />-->
+                        </div>
+                        <div class="col-5">
+                            <span class="text-right">
+                                 <p>Date:<t t-esc="date_end"/></p>
+                            </span>
+                        </div>
+                    </div><br/>
+                    <table class="table table-sm">
+                        <thead>
+                            <t t-set="seq" t-value="1"/>
+                            <tr>
+                                <th ><strong>Employee</strong></th>
+                                <th ><strong>Seq</strong></th>
+                                <th ><strong>Qatar ID</strong></th>
+                                <th class="text-end"><strong>End of Service</strong></th>
+                                <th class="text-end"><strong>Leave Pay</strong></th>
+                                <th class="text-end"><strong>Total</strong></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-set="tot_eos" t-value="0"/>
+                            <t t-set="tot_lp" t-value="0"/>
+                            <tr t-foreach="acc_eos_lp" t-as="line">
+                                <td><span t-esc="seq"/></td>
+                                <td><span t-esc="line['employee_name']"/></td>
+                                <td><span t-esc="line['employee_id']"/></td>
+                                <td class="text-end" t-esc="line['eos_amount']"/>
+                                <td class="text-end" t-esc="line['lp_amount']"/>
+                                <td class="text-end" t-esc="line['lp_amount']+line['eos_amount']"/>
+                                <t t-set="tot_eos" t-value="tot_eos + line['eos_amount']"/>
+                                <t t-set="tot_lp" t-value="tot_lp + line['lp_amount']"/>
+                                <t t-set="seq" t-value="seq + 1"/>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                 <td style="font-weight: bold;">TOTAL</td>
+                                <td class="text-end" style="font-weight: bold;" t-esc="tot_eos"/>
+                                <td class="text-end" style="font-weight: bold;" t-esc="tot_lp" />
+                                <td class="text-end" style="font-weight: bold;" t-esc="tot_lp+tot_eos" />
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br/>
+                </div>
+            </t>
+<!--        </t>-->
+    </t>
+</template>
+</odoo>

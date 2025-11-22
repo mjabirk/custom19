@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="mrp_bom_form_view_inherit" model="ir.ui.view">
+        <field name="name">mrp.bom.form.view.inherit</field>
+        <field name="model">mrp.bom</field>
+        <field name="inherit_id" ref="mrp.mrp_bom_form_view" />
+        <field name="arch" type="xml">
+            <xpath expr="//notebook/page//field[@name='product_uom_id']" position="after">
+                <field name="absorption_pc" />
+                <field name="spec_gravity" />
+            </xpath>
+            <xpath expr="//field[@name='ready_to_produce']" position="before">
+                    <field name="strength_grade"/>
+                    <field name="max_agg_size"/>
+                    <field name="tot_cem_mat"/>
+                    <field name="min_cem_con"/>
+                    <field name="con_temp"/>
+                    <field name="des_wat_cem_rat"/>
+            </xpath>
+            <xpath expr="//field[@name='picking_type_id']" position="before">
+                    <field name="slfl"/>
+                    <field name="res_chl_ion"/>
+                    <field name="wat_pen"/>
+                    <field name="max_chl_mig"/>
+                    <field name="wat_abs"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
+

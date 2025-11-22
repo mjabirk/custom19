@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <record id="view_consumption_analysis" model="ir.ui.view">
+            <field name="name">Consumption Analysis</field>
+            <field name="model">consumption.analysis.wiz</field>
+            <field name="arch" type="xml">
+            <form string="Employee Productivity Analysis">
+                <span class="o_form_label">This wizard will generate consumption analysis report based on bom and alkon.</span>
+                <footer>
+                    <button name="print_report" string="Print" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel" />
+                </footer>
+                <group>
+                    <field name="start_date"/>
+                    <field name="end_date"/>
+                </group>
+            </form>
+            </field>
+        </record>
+
+        <record id="action_consumption_analysis" model="ir.actions.act_window">
+            <field name="name">Consumption Analysis</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">consumption.analysis.wiz</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem
+            name="Consumption Analysis"
+            parent="hr.hr_menu_hr_reports"
+            sequence="220"
+            action="action_consumption_analysis"
+            id="menu_consumption_analysis"
+           />
+</odoo>

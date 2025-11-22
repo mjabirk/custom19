@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="confirmation_balance_wizard" model="ir.ui.view">
+            <field name="name">confirmation.balance.wizard.form</field>
+            <field name="model">confirmation.balance.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="partner_id"/>
+                        <field name="date"/>
+                        <field name="hide_negative"/>
+                        <field name="limit_balance"/>
+                    </group>
+
+                    <footer>
+                        <button string="Cancel" special="cancel"/>
+                        <button string="Generate PDF" class="oe_highlight" type="object" name="print_report"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_confirmation_balance_wizard" model="ir.actions.act_window">
+            <field name="name">Confirmation Balance</field>
+            <field name="res_model">confirmation.balance.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem id="menu_action_confirmation_balance_wizard"
+            name="Confirmation Balance"
+            action="action_confirmation_balance_wizard"
+            parent="account.account_reports_management_menu"/>
+
+
+    </data>
+</odoo>

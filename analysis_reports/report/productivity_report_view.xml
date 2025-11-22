@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- productivity and cost -->
+
+    <record id="productivity_report_filter" model="ir.ui.view">
+        <field name="name">productivity.report.search</field>
+        <field name="model">productivity.report</field>
+        <field name="arch" type="xml">
+            <search string="Search Productivity and Cost">
+                <field name="vehicle_id"/>
+                <field name="employee_id"/>
+                <field name="type"/>
+                <field name="vehicle_code"/>
+                <field name="license_plate"/>
+                <field name="active"/>
+                <filter name="date_filter" string="Date" date="date"/>
+                <filter string="Trips" name="trips" domain="[('type','=','trips')]" help="Trips"/>
+                <filter string="Services" name="service" domain="[('type','=','service')]" help="Services"/>
+                <filter string="Fuel" name="fuel" domain="[('type','=','fuel')]" help="Fuel"/>
+                <filter string="All" name="all" domain="['|',('active','=',True),('active','=',False)]" help="Fuel"/>
+                <separator/>
+                <filter string="Date" name="date" context="{'group_by':'date'}"/>
+                <filter string="Fuel Month" name="fuel_month" context="{'group_by':'date:month'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="productivity_report_tree" model="ir.ui.view">
+        <field name="name">productivity.report.tree</field>
+        <field name="model">productivity.report</field>
+        <field name="arch" type="xml">
+            <list string="Productivity and Cost">
+                <field name="date"/>
+                <field name="vehicle_id"/>
+                <field name="employee_id"/>
+                <field name="quantity"/>
+                <field name="trips"/>
+                <field name="distance"/>
+                <field name="worked_time"/>
+                <field name="fuel"/>
+                <field name="service"/>
+                <field name="type"/>
+            </list>
+        </field>
+    </record>
+
+<!--    <record id="productivity_report_view_kanban" model="ir.ui.view">-->
+<!--        <field name="name">productivity.report.kanban</field>-->
+<!--        <field name="model">productivity.report</field>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <kanban class="o_kanban_mobile">-->
+<!--                <templates>-->
+<!--                    <t t-name="kanban-box">-->
+<!--                        <div t-attf-class="oe_kanban_content oe_kanban_global_click">-->
+<!--                            <div class="row">-->
+<!--                                <div class="col-6">-->
+<!--                                    <strong><field name="vehicle_id"/></strong>-->
+<!--                                </div>-->
+<!--                                <div class="col-6">-->
+<!--                                    <span class="float-right badge badge-secondary">-->
+<!--                                        <field name="type"/>-->
+<!--                                    </span>-->
+<!--                                </div>-->
+<!--                                <div class="col-12">-->
+<!--                                    <span>-->
+<!--                                        <field name="date"/>-->
+<!--                                        <field name="distance"/>-->
+<!--                                    </span>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </t>-->
+<!--                </templates>-->
+<!--            </kanban>-->
+<!--        </field>-->
+<!--    </record>-->
+
+ <record id="productivity_report_form" model="ir.ui.view">
+            <field name="name">productivity.report.form</field>
+            <field name="model">productivity.report</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group >
+                        <group>
+
+                            <field name="date"/>
+                            <field name="vehicle_id"/>
+                            <field name="employee_id"/>
+                            <field name="quantity"/>
+                            <field name="trips"/>
+                            <field name="distance"/>
+                            <field name="worked_time"/>
+                            <field name="fuel"/>
+                            <field name="service"/>
+                            <field name="type"/>
+                        </group>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+    <record id="productivity_report_pivot" model="ir.ui.view">
+         <field name="name">productivity.report.pivot</field>
+         <field name="model">productivity.report</field>
+         <field name="arch" type="xml">
+             <pivot string="Productivity and Cost" disable_linking="True">
+                 <field name="vehicle_id" type="row"/>
+                 <field name="date" type="col" interval="month" />
+                <field name="quantity" type="measure"/>
+                <field name="distance" type="measure"/>
+                <field name="trips" type="measure"/>
+                <field name="worked_time" type="measure"/>
+                <field name="service" type="measure"/>
+                <field name="fuel" type="measure"/>
+                <field name="fuel_cost" type="measure"/>
+
+             </pivot>
+         </field>
+    </record>
+
+    <record id="productivity_report_graph" model="ir.ui.view">
+         <field name="name">productivity.report.graph</field>
+         <field name="model">productivity.report</field>
+         <field name="arch" type="xml">
+             <graph string="Productivity and Cost" type="line">
+                 <field name="vehicle_id" type="row"/>
+                 <field name="quantity" type="measure"/>
+             </graph>
+         </field>
+    </record>
+
+    <record id="action_productivity_report_tree" model="ir.actions.act_window">
+        <field name="name">Productivity and Cost</field>
+        <field name="res_model">productivity.report</field>
+        <field name="view_mode">graph,pivot</field>
+        <field name="view_id"></field>  <!-- force empty -->
+        <field name="search_view_id" ref="productivity_report_filter"/>
+        <field name="context">{'group_by':[]}</field>
+    </record>
+    <menuitem action="action_productivity_report_tree" id="menu_productivity_report" parent="fleet.menu_fleet_reporting"/>
+
+
+</odoo>

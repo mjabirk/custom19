@@ -56,7 +56,7 @@ class SalaryTransferSheet(models.TransientModel):
         payer_eid = sponsor.payer_eid or ''
         payer_qid = sponsor.payer_qid or ''
 
-        if not all([employer_eid, payer_eid, payer_qid, bank_bic != 'CONFIG_BIC', bank_acc_number != 'CONFIG_ACC']):
+        if not all([employer_eid, bank_bic != 'CONFIG_BIC', bank_acc_number != 'CONFIG_ACC']):
             _logger.warning(
                 f"Skipping sponsor {sponsor.partner_id.name} due to incomplete WPS configuration (EID, QID, or Bank Details).")
             return None, None
@@ -231,8 +231,9 @@ class SalaryTransferSheet(models.TransientModel):
     def generate_transfer_sheet(self, given_payroll_reg=False):
         """
         Main method to generate SIF files.
-        Groups payslips by sponsor, generates a file for each,
-        and returns a ZIP file.
+        Groups payslips by sponsor, generates a file for each.
+        If only one file is generated, it's returned as a CSV.
+        If multiple files are generated, they are returned as a ZIP.
         """
         if not given_payroll_reg:
             payroll_reg = self.env['hr.payslip.run'].browse(self.env.context.get('active_id'))
@@ -248,46 +249,61 @@ class SalaryTransferSheet(models.TransientModel):
             sponsor = slip.employee_id.wps_sponsor_id or company.partner_id.wps_sponsor_id
             grouped_slips[sponsor].append(slip)
 
-        zip_buffer = io.BytesIO()
-        files_generated = 0
-        with zipfile.ZipFile(zip_buffer, 'a', zipfile.ZIP_DEFLATED, False) as zip_file:
-            for sponsor, slips in grouped_slips.items():
-                # Get the bank format from the sponsor partner
-                # This requires the 'wps_bank_format' field on res.partner
+        generated_files = []  # Store tuples of (file_name, file_content)
 
-                # Get the sponsor's bank account
-                sponsor_bank_ac = sponsor.bank_account_id
-                if not sponsor_bank_ac:
-                    _logger.warning(
-                        f"WPS SIF generation skipped for sponsor {sponsor.partner_id.name} (ID: {sponsor.id}) "
-                        f"due to missing bank account on their partner record."
-                    )
-                    continue
+        for sponsor, slips in grouped_slips.items():
+            # Get the bank format from the sponsor partner
+            # This requires the 'wps_bank_format' field on res.partner
 
-                # Generate the file for this group
-                file_name, file_content = self._generate_sif_for_group(
-                    sponsor, sponsor_bank_ac, slips, self.bank_list, payroll_reg
+            # Get the sponsor's bank account
+            sponsor_bank_ac = sponsor.bank_account_id
+            if not sponsor_bank_ac:
+                _logger.warning(
+                    f"WPS SIF generation skipped for sponsor {sponsor.partner_id.name} (ID: {sponsor.id}) "
+                    f"due to missing bank account on their partner record."
                 )
+                continue
 
-                if file_name and file_content:
-                    zip_file.writestr(file_name, file_content)
-                    files_generated += 1
+            # Generate the file for this group
+            file_name, file_content = self._generate_sif_for_group(
+                sponsor, sponsor_bank_ac, slips, self.bank_list, payroll_reg
+            )
 
-        if files_generated == 0:
+            if file_name and file_content:
+                generated_files.append((file_name, file_content))
+        if not generated_files:
             raise UserError(
                 _("No valid employee payslips or sponsor configurations found. No SIF files were generated."))
 
-        # Get the zip file's content
-        zip_b64 = base64.b64encode(zip_buffer.getvalue())
-        zip_filename = f"WPS_SIF_Files_{payroll_reg.name.replace(' ', '_')}_{time.strftime('%Y%m%d')}.zip"
+        final_filename = ""
+        final_b64_content = None
 
+        if len(generated_files) == 1:
+            # --- SINGLE FILE CASE ---
+            # If only one file, don't zip it.
+            file_name, file_content = generated_files[0]
+            final_filename = file_name
+            final_b64_content = base64.b64encode(file_content)
+
+        else:
+            # --- MULTIPLE FILES CASE (Original ZIP logic) ---
+            zip_buffer = io.BytesIO()
+            with zipfile.ZipFile(zip_buffer, 'a', zipfile.ZIP_DEFLATED, False) as zip_file:
+                for file_name, file_content in generated_files:
+                    zip_file.writestr(file_name, file_content)
+
+            # Get the zip file's content
+            final_b64_content = base64.b64encode(zip_buffer.getvalue())
+            final_filename = f"WPS_SIF_Files_{payroll_reg.name.replace(' ', '_')}_{time.strftime('%Y%m%d')}.zip"
+
+        # --- UNIFIED RETURN LOGIC ---
         if given_payroll_reg:
             # If called from another process, return the file data
-            return (zip_filename, zip_b64)
+            return (final_filename, final_b64_content)
         else:
             # If called from wizard, update self and return action
-            self.export_file = zip_b64
-            self.export_filename = zip_filename
+            self.export_file = final_b64_content
+            self.export_filename = final_filename
 
             return {
                 "view_mode": "form",

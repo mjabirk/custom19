@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="eoslp_wizard" model="ir.ui.view">
+            <field name="name">eoslp.wizard.form</field>
+            <field name="model">eoslp.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="batch_id"/>
+                    </group>
+                    <footer>
+                        <button string="Cancel" special="cancel"/>
+                        <button string="Generate PDF" class="oe_highlight" type="object" name="print_report"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_eoslp_wizard" model="ir.actions.act_window">
+            <field name="name">EOS and LP Accumulation</field>
+            <field name="res_model">eoslp.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem id="menu_eoslp_wizard"
+            name="EOS and LP Accumulation"
+            action="action_eoslp_wizard"
+            parent="account.account_reports_management_menu"/>
+
+
+    </data>
+</odoo>

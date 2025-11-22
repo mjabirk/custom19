@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+            <template id="customer_statement_report_qweb">
+            <style>
+            .top_hide{
+                border-top:hidden;
+            }
+            .show_borders_tr{
+                border:1px solid #D0D0D0;
+                padding: 1px 00px 1px 00px;
+            }
+            .show_borders_td{
+                border:1px solid #D0D0D0;
+                width:25%;
+                text-align:center;
+            }        
+            </style>
+            <t t-call="web.html_container">
+
+                <t t-call="web.external_layout">
+                    <t t-foreach="docs" t-as="o">
+                    <div class="page">
+                    <span><h3><b><t t-esc="o.name"/></b></h3></span>
+
+                    <t t-set="current_total" t-value="0"/>
+                    <t t-set="current_subtotal" t-value="0"/>
+                    <div t-if="get_invoices[o.id][0]" class="table">
+                        <t >
+                            <span><h3><b>Invoices </b></h3></span>
+                        </t>
+                            <table class="table">
+                                <thead>
+                                    <tr class="show_borders_tr">
+                                        <th class="show_borders_td"><span>Ref</span></th>
+                                        <th class="show_borders_td"><span>Date</span></th>
+                                        <th class="show_borders_td"><span>Due Date</span></th>
+                                        <th class="show_borders_td"><span>Communication</span></th>
+                                        <th class="show_borders_td"><span>Due</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="get_invoices[o.id][0]" t-as="invoice">
+                                        <t t-set="current_subtotal" t-value="current_subtotal + invoice['due_amount']" />
+                                        <tr class="show_borders_tr">
+                                            <td class="show_borders_td"><span t-esc="invoice['ref']"/></td>
+                                            <td class="show_borders_td"><span t-esc="invoice['date']"  t-options="{&quot;widget&quot;: &quot;date&quot;}"/></td>
+                                            <td class="show_borders_td"><span t-esc="invoice['due_date']"  t-options="{&quot;widget&quot;: &quot;date&quot;}"/></td>
+                                            <td class="show_borders_td"><span t-esc="invoice['communication']"/></td>
+                                            <td class="show_borders_td"><span t-esc="invoice['due_amount']"/></td>
+                                        </tr>
+                                    </t>
+                                    <tr class="is-subtotal text-right">
+                                            <td colspan="99">
+                                                <strong class="mr16">Customer Balance: </strong>
+                                                <span t-esc="current_subtotal" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.env.user.company_id.currency_id}"/>
+                                                <t t-set="current_total" t-value="current_total + current_subtotal" />
+                                            </td>
+                                        </tr>
+                                </tbody>
+                            </table>
+                    </div>
+                    <div t-if="get_invoices[o.id][1]" >
+                        <t >
+                            <span><h3><b>PDC </b></h3></span>
+                        </t>
+
+                            <table class="table">
+                                <thead>
+                                    <tr class="show_borders_tr">
+                                        <th class="show_borders_td"><span>Ref</span></th>
+                                        <th class="show_borders_td"><span>Date</span></th>
+                                        <th class="show_borders_td"><span>Due Date</span></th>
+                                        <th class="show_borders_td"><span>Communication</span></th>
+                                        <th class="show_borders_td"><span>Amount</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-set="current_subtotal" t-value="0"/>
+                                    <t t-foreach="get_invoices[o.id][1]" t-as="invoice">
+                                        <t t-set="current_subtotal" t-value="current_subtotal + invoice['due_amount']" />
+                                        <tr class="show_borders_tr">
+                                            <td class="show_borders_td"><span t-esc="invoice['ref']"/></td>
+                                            <td class="show_borders_td"><span t-esc="invoice['date']"  t-options="{&quot;widget&quot;: &quot;date&quot;}"/></td>
+                                            <td class="show_borders_td"><span t-esc="invoice['due_date']"  t-options="{&quot;widget&quot;: &quot;date&quot;}"/></td>
+                                            <td class="show_borders_td"><span t-esc="invoice['communication']"/></td>
+                                            <td class="show_borders_td"><span t-esc="-1*invoice['due_amount']"/></td>
+                                        </tr>
+                                    </t>
+                                    <tr class="is-subtotal text-right">
+                                            <td colspan="99">
+                                                <strong class="mr16">Total PDC: </strong>
+                                                <span t-esc="-1*current_subtotal" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.env.user.company_id.currency_id}"/>
+                                                <t t-set="current_total" t-value="current_total + current_subtotal" />
+                                            </td>
+                                        </tr>
+                                </tbody>
+                            </table>
+                    </div>
+                    <div  t-if="get_invoices[o.id][3]" >
+                        <t >
+                            <span><h3><b>Guarantee Check</b></h3></span>
+                        </t>
+                            <table class="table">
+                                <thead>
+                                    <tr class="show_borders_tr">
+                                        <th class="show_borders_td"><span>Ref</span></th>
+                                        <th class="show_borders_td"><span>Date</span></th>
+                                        <th class="show_borders_td"><span>Communication</span></th>
+                                        <th class="show_borders_td"><span>Amount</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-set="current_subtotal" t-value="0"/>
+                                    <t t-foreach="get_invoices[o.id][3]" t-as="invoice">
+                                        <t t-set="current_subtotal" t-value="current_subtotal + invoice['due_amount']" />
+                                        <tr class="show_borders_tr">
+                                            <td class="show_borders_td"><span t-esc="invoice['ref']"/></td>
+                                            <td class="show_borders_td"><span t-esc="invoice['date']"  t-options="{&quot;widget&quot;: &quot;date&quot;}"/></td>
+                                            <td class="show_borders_td"><span t-esc="invoice['communication']"/></td>
+                                            <td class="show_borders_td"><span t-esc="invoice['due_amount']"/></td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                    </div>
+                    <div  t-if="get_invoices[o.id][2]" >
+                        <t >
+                            <span><h3><b>Other </b></h3></span>
+                        </t>
+                            <table class="table">
+                                <thead>
+                                    <tr class="show_borders_tr">
+                                        <th class="show_borders_td"><span>Ref</span></th>
+                                        <th class="show_borders_td"><span>Date</span></th>
+                                        <th class="show_borders_td"><span>Due Date</span></th>
+                                        <th class="show_borders_td"><span>Communication</span></th>
+                                        <th class="show_borders_td"><span>Due</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-set="current_subtotal" t-value="0"/>
+                                    <t t-foreach="get_invoices[o.id][2]" t-as="invoice">
+                                        <t t-set="current_subtotal" t-value="current_subtotal + invoice['due_amount']" />
+                                        <tr class="show_borders_tr">
+                                            <td class="show_borders_td"><span t-esc="invoice['ref']"/></td>
+                                            <td class="show_borders_td"><span t-esc="invoice['date']"  t-options="{&quot;widget&quot;: &quot;date&quot;}"/></td>
+                                            <td class="show_borders_td"><span t-esc="invoice['due_date']"  t-options="{&quot;widget&quot;: &quot;date&quot;}"/></td>
+                                            <td class="show_borders_td"><span t-esc="invoice['communication']"/></td>
+                                            <td class="show_borders_td"><span t-esc="invoice['due_amount']"/></td>
+                                        </tr>
+                                    </t>
+                                    <tr class="is-subtotal text-right">
+                                        <td colspan="99">
+                                            <strong class="mr16">Other Amount:</strong>
+                                            <span t-esc="current_subtotal" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.env.user.company_id.currency_id}"/>
+                                            <t t-set="current_total" t-value="current_total + current_subtotal" />
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                    </div>
+                    <table t-if="current_total" class="table">
+                        <tr class="is-subtotal text-right">
+                            <td colspan="99">
+                                <strong class="mr16">Collection Amount:</strong>
+                                <span t-esc="current_total" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.env.user.company_id.currency_id}"/>
+                            </td>
+                        </tr>
+                    </table>
+                    </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

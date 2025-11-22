@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<template id="confirmation_of_balance_qweb">
+    <t t-call="web.html_container">
+        <t t-foreach="partner_data" t-as="dat">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <h2 class="text-center mb-0 m-0">Confirmation Of Balance</h2>
+                    <div class="row">
+                        <div class="col-7">
+                            <div><b>To,</b></div>
+                            <div t-esc="dat[0]" t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}' />
+                        </div>
+                        <div class="col-5">
+                            <span class="text-right">
+                                 <p>Date:<t t-esc="time.strftime('%d-%b-%Y')"/></p>
+                            </span>
+                        </div>
+                    </div><br/>
+                    <div>
+                        <span class="text-left">
+                            <p>In connection with our periodical auditing, we are kindly requesting you to confirm the balance due to us on <t t-esc="time.strftime('%d-%B-%Y', time.strptime(form['date'],'%Y-%m-%d'))"/></p>
+                            <p  class="text-right"> <t t-esc="form['date']"  t-options="{'widget': 'date'}"/>  في اطار تدقيقنا الدوري نرجو منكم التفضل بتأكيد الرصيد المستحق لنا في </p>
+                        </span>
+                    </div>
+                    <h4  class="text-center">
+                        <t t-esc="dat[1]" t-options="{'widget': 'monetary', 'display_currency': company.currency_id}"/>
+                    </h4>
+
+                    <h4  class="text-center">
+                        <t t-esc="amount_word(dat[1])"/>
+                    </h4>
+                    <br/>
+                    <div class="row">
+                        <div class="col-6">
+                            <span>
+                                <p><b>Thanks and Regards<br/><br/></b></p>
+                                <p>
+                                <br/>
+                                </p>
+                                <p><b>_______________________</b></p>
+                            </span>
+                        </div>
+                        <div class="col-6">
+                            <span>
+                              <p><b>Received By:</b><br/><br/></p>
+                              <p><b>Date</b></p>
+                            </span>
+                        </div>
+                    </div>
+                    <span class="text-left">
+                        <div><b>NOTE: If there is no reply with in 7 Days from the date of receipt of this letter to confirm the above mentioned Amount, it will be considered as correct without any further notice.</b></div>
+                        <div  class="text-right"><b>ملاحظة: إذا لم يكن هناك رد خلال 7 أيام من تاريخ استلام هذه الرسالة لتأكيد المبلغ المذكور أعلاه، فإنه
+سيتم اعتباره صحيحًا دون أي إشعار آخر.</b></div>
+                    </span>
+                    <p><b>_____________________________________________________________________________________________________________________________________________</b></p>
+                    <h3 class="text-center">
+                        <u>For Client Use</u>
+                    </h3>
+                    <p>Name : -----------------------------------------------------------------------------</p>
+                    <p>Title : -----------------------------------------------------------------------------</p>
+                    <p>Siganture : -----------------------------------------Date:------- /-------- / ---------</p>
+                    <p>Company Stamp:</p>
+                    <p>Remarks:--------------------------------------------------------------------------------------------------------</p>
+                    <p>---------------------------------------------------------------------------------------------------------------------</p>
+                    <p>---------------------------------------------------------------------------------------------------------------------</p>
+
+
+
+
+                </div>
+            </t>
+        </t>
+    </t>
+</template>
+</odoo>

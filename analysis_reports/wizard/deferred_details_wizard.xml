@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="deferred_details_wizard" model="ir.ui.view">
+            <field name="name">deferred.details.wizard.form</field>
+            <field name="model">deferred.details.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="date"/>
+                        <field name="hide_zero"/>
+                        <field name="rec_type"/>
+                    </group>
+                    <footer>
+                        <button string="Cancel" special="cancel"/>
+                        <button string="Generate PDF" class="oe_highlight" type="object" name="print_report"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_deferred_details_wizard" model="ir.actions.act_window">
+            <field name="name">Deferred Details</field>
+            <field name="res_model">deferred.details.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem id="menu_deferred_details_wizard"
+            name="Deferred Details"
+            action="action_deferred_details_wizard"
+            parent="account.account_reports_management_menu"/>
+
+
+    </data>
+</odoo>

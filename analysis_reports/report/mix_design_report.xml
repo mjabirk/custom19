@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+            <template id="mix_design_report">
+            <style>
+            .top_hide{
+                border-top:hidden;
+            }
+            .show_borders_tr{
+                border:1px solid #D0D0D0;
+                padding: 1px 00px 1px 00px;
+            }
+            .show_borders_td{
+                border:1px solid #D0D0D0;
+                width:25%;
+                text-align:center;
+            }
+            </style>
+            <t t-call="web.html_container">
+
+                <t t-call="web.external_layout">
+                    <t t-foreach="docs" t-as="o">
+                    <div class="page">
+                        <span style="text-align:center;"><h3><b>CONCRETE MIX DESIGN</b></h3></span>
+
+                        <div class="row mt32 mb32" id="general_informations">
+                            <div t-if="o.product_tmpl_id.default_code" class="col-auto col-2 mw-100 mb-2">
+                                <strong>Mix Code:</strong>
+                                <p class="m-0" t-field="o.product_tmpl_id.default_code"/>
+                            </div>
+                            <div class="col-auto col-2 mw-100 mb-2">
+                                <strong>Description:</strong>
+                                <p class="m-0" t-field="o.product_tmpl_id.name"/>
+                            </div>
+                            <div class="col-auto col-2 mw-100 mb-2">
+                                <strong>Date:</strong>
+                                <p class="m-0" t-esc="time.strftime('%Y-%m-%d ')" t-options="{&quot;widget&quot;: &quot;date&quot;}"/>
+                            </div>
+                            <div t-if="o.strength_grade" class="col-auto col-3 mw-100 mb-2">
+                                <strong>Strength Grade:</strong>
+                                <p class="m-0" t-field="o.strength_grade"/>
+                            </div>
+                            <div t-if="o.max_agg_size" class="col-auto col-3 mw-100 mb-2">
+                                <strong>Max. Size of Aggregates:</strong>
+                                <p class="m-0" t-field="o.max_agg_size"/>
+                            </div>
+                        </div>
+
+                        <span style="text-align:left;"><h4><b>MIX PARAMETERS</b></h4></span>
+                        <div class="row mt32 " id="mix_parameter">
+                            <div t-if="o.tot_cem_mat" class="col-auto col-4 mw-100 mb-2">
+                                <strong>Total Cementitious Materials, kg/m³:</strong>
+                                <p  t-field="o.tot_cem_mat"/>
+                            </div>
+                            <div t-if="o.min_cem_con" class="col-auto col-4 mw-100 mb-2">
+                                <strong>Min. Cement Content (QCS 2014), kg</strong>
+                                <p class="m-0" t-field="o.min_cem_con"/>
+                            </div>
+                            <div t-if="o.con_temp" class="col-auto col-4 mw-100 mb-2">
+                                <strong>Concrete Temp (°C)</strong>
+                                <p class="m-0" t-field="o.con_temp"/>
+                            </div>
+                        </div>
+                        <div class="row  mb32" id="mix_parameter">
+                            <div t-if="o.des_wat_cem_rat" class="col-auto col-4 mw-100 mb-2">
+                                <strong>Design water-cement ratio (w/c)</strong>
+                                <p class="m-0" t-field="o.des_wat_cem_rat"/>
+                            </div>
+                            <div t-if="o.slfl" class="col-auto col-4 mw-100 mb-2">
+                                <strong>Slump/Flow, mm (QCS 2014)</strong>
+                                <p class="m-0" t-field="o.slfl"/>
+                            </div>
+                        </div>
+
+                        <span style="text-align:left;"><h4><b>DURABILITY CRITERIA</b></h4></span>
+                        <div class="row mt32 mb32" id="durability_crit">
+                            <div t-if="o.res_chl_ion" class="col-auto col-3 mw-100 mb-2">
+                                <strong>Resistance to Chloride Ion Penetration ASTM C 1202 (Coulombs)</strong>
+                                <p class="m-0" t-field="o.res_chl_ion"/>
+                            </div>
+                            <div t-if="o.wat_pen" class="col-auto col-3 mw-100 mb-2">
+                                <strong>Water Penetration BSEN12390-8, mm</strong>
+                                <p class="m-0" t-field="o.wat_pen"/>
+                            </div>
+                            <div t-if="o.max_chl_mig" class="col-auto col-3 mw-100 mb-2">
+                                <strong>Maximum Chloride Migration, m²/s</strong>
+                                <p class="m-0" t-field="o.max_chl_mig"/>
+                            </div>
+                            <div t-if="o.wat_abs" class="col-auto col-3 mw-100 mb-2">
+                                <strong>Water Absorption BS 1881 Part 122, %</strong>
+                                <p class="m-0" t-field="o.wat_abs"/>
+                            </div>
+                        </div>
+
+                        <span style="text-align:left;"><h4><b/></h4></span>
+
+
+
+
+                        <div t-if="o.bom_line_ids" class="table">
+                            <table class="table  table-sm">
+                                <thead>
+                                    <tr class="show_borders_tr">
+                                        <th class="show_borders_td"><span>Materials</span></th>
+                                        <th class="show_borders_td"><span>Source</span></th>
+                                        <th class="show_borders_td"><span>Batch Weight (SSD), kg/m³</span></th>
+                                        <th class="show_borders_td"><span>Absorption %</span></th>
+                                        <th class="show_borders_td"><span>Water Correction, kg/m³</span></th>
+                                        <th class="show_borders_td"><span>Batch Weight (Dry), kg/m³</span></th>
+                                        <th class="show_borders_td"><span>Spec. Gravity</span></th>
+                                        <th class="show_borders_td"><span>Absolute Volume, m³</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-set="bw_total" t-value="0"/>
+                                    <t t-set="wc_total" t-value="0"/>
+                                    <t t-set="dbw_total" t-value="0"/>
+                                    <t t-set="av_total" t-value="0"/>
+                                    <t t-foreach="o.bom_line_ids" t-as="bom_line">
+                                        <t t-set="bw_total" t-value="bw_total + bom_line.product_qty" />
+                                        <t t-set="wc_total" t-value="wc_total + (bom_line.absorption_pc / 100 * bom_line.product_qty)" />
+                                        <t t-set="dbw_total" t-value="dbw_total + (bom_line.product_qty - (bom_line.absorption_pc / 100 * bom_line.product_qty))" />
+                                        <t t-set="av_total" t-value="av_total + (bom_line.spec_gravity and (bom_line.product_qty/bom_line.spec_gravity)/1000 or 0)" />
+                                        <tr class="show_borders_tr">
+                                            <td class="show_borders_td"><span t-esc="bom_line.product_id.name"/></td>
+                                            <td class="show_borders_td"><span t-esc="bom_line.product_id.seller_ids and bom_line.product_id.seller_ids[0].partner_id.partner_short_code or ''"/></td>
+                                            <td class="show_borders_td"><span t-esc="bom_line.product_qty"/></td>
+                                            <td class="show_borders_td"><span t-esc="round(bom_line.absorption_pc,3)"/></td>
+                                            <td class="show_borders_td"><span t-esc="round(bom_line.absorption_pc / 100 * bom_line.product_qty,3)"/></td>
+                                            <td class="show_borders_td"><span t-esc="round(bom_line.product_qty - (bom_line.absorption_pc / 100 * bom_line.product_qty),3)"/></td>
+                                            <td class="show_borders_td"><span t-esc="round(bom_line.spec_gravity,3)"/></td>
+                                            <td class="show_borders_td"><span t-esc="round(bom_line.spec_gravity and (bom_line.product_qty/bom_line.spec_gravity)/1000 or 0,3)"/></td>
+                                        </tr>
+                                    </t>
+                                    <tr class="is-subtotal text-right">
+                                        <td  colspan="2">
+                                            <strong class="mr16">Total Weight, kg/m³</strong>
+                                        </td>
+                                        <td class="show_borders_td"><span t-esc="round(bw_total,3)"/></td>
+                                        <td class="show_borders_td"><span/></td>
+                                        <td class="show_borders_td"><span t-esc="round(wc_total,3)"/></td>
+                                        <td class="show_borders_td"><span t-esc="round(dbw_total,3)"/></td>
+                                        <td   colspan="2" class="show_borders_td">Air Content = (2%)</td>
+                                    </tr>
+                                    <tr class="is-subtotal text-right">
+                                        <td  colspan="2">
+                                            <strong class="mr16">Total Volume, m³</strong>
+                                        </td>
+                                        <td colspan="5" class="show_borders_td"><span/></td>
+                                        <td class="show_borders_td"><span t-esc="round(av_total + 2/100,1)"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

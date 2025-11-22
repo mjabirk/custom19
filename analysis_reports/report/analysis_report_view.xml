@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+
+        <record id="action_eos_lp_report" model="ir.actions.report">
+            <field name="name">EOS LP Report</field>
+            <field name="model">hr.salary.rule</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">analysis_reports.eos_lp_report</field>
+            <field name="report_file">analysis_reports.eos_lp_report</field>
+            <field name="binding_model_id" ref="hr_payroll.model_hr_salary_rule"/>
+            <field name="binding_type">report</field>
+        </record>
+
+        <record id="action_compressive_test_report" model="ir.actions.report">
+            <field name="name">Compressive Test Report</field>
+            <field name="model">stock.picking</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">analysis_reports.compressive_test_report</field>
+            <field name="report_file">analysis_reports.compressive_test_report</field>
+            <field name="binding_model_id" ref="stock.model_stock_picking"/>
+            <field name="binding_type">report</field>
+        </record>
+
+        <record id="action_mix_design_report" model="ir.actions.report">
+            <field name="name">Mix Design Report</field>
+            <field name="model">mrp.bom</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">analysis_reports.mix_design_report</field>
+            <field name="report_file">analysis_reports.mix_design_report</field>
+            <field name="binding_model_id" ref="mrp.model_mrp_bom"/>
+            <field name="binding_type">report</field>
+        </record>
+
+        <record id="action_report_customer_statement" model="ir.actions.report">
+            <field name="name">Customer Collection Statement</field>
+            <field name="model">res.partner</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">analysis_reports.customer_statement_report_qweb</field>
+            <field name="report_file">analysis_reports.customer_statement_report_qweb</field>
+            <field name="print_report_name">'Customer Statement - %s' % (object.name)</field>
+            <field name="binding_model_id" ref="base.model_res_partner"/>
+            <field name="binding_type">report</field>
+            <field name="group_ids" eval="[(4, ref('sale.group_proforma_sales'))]"/>
+
+        </record>
+
+
+        <record id="action_report_confirmation_of_balance" model="ir.actions.report">
+            <field name="name">Confirmation of Balance</field>
+            <field name="model">res.partner</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">analysis_reports.confirmation_of_balance_qweb</field>
+            <field name="report_file">analysis_reports.confirmation_of_balance_qweb</field>
+            <field name="print_report_name">'Confirmation Of Balance</field>
+            <field name="binding_model_id" ref="base.model_res_partner"/>
+            <field name="binding_type">report</field>
+            <field name="group_ids" eval="[(4, ref('sale.group_proforma_sales'))]"/>
+        </record>
+
+        <record id="action_report_deferred_details" model="ir.actions.report">
+            <field name="name">Deferred Details</field>
+            <field name="model">deferred.details.wizard</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">analysis_reports.deferred_details_qweb</field>
+            <field name="report_file">analysis_reports.deferred_details_qweb</field>
+            <field name="print_report_name">'Deferred Details</field>
+            <field name="binding_model_id" ref="analysis_reports.model_deferred_details_wizard"/>
+            <field name="binding_type">report</field>
+        </record>
+
+	</data>
+</openerp>

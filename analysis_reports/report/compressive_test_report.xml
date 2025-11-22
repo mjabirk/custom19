@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+            <template id="compressive_test_report">
+            <style>
+            </style>
+            <t t-call="web.html_container">
+
+                <t t-call="web.external_layout">
+                    <t t-foreach="docs" t-as="o">
+                    <div class="page">
+                        <span  style="text-align:left;"><h3><b>TEST CERTIFICATE OF CONCRETE CUBES</b></h3></span>
+                        <span  style="text-align:left;"><b>BS EN 12390-1</b></span>
+
+                        <div class="row mt32 mb32" id="general_informations">
+                            <div t-if="o.partner_id" class="col-auto col-3 mw-100 mb-2">
+                                <strong>Customer:</strong>
+                                <p class="m-0" t-esc="o.partner_id and (o.partner_id.parent_id and o.partner_id.parent_id.name or o.partner_id.name)"/>
+                            </div>
+                            <div class="col-auto col-3 mw-100 mb-2">
+                                <strong>Site / Location:</strong>
+                                <p class="m-0" t-field="o.partner_id and o.partner_id.name"/>
+                            </div>
+
+                            <div class="col-auto col-3 mw-100 mb-2">
+                                <strong>Concrete Grade:</strong>
+                                <p class="m-0" t-field="o.x_studio_main_product.display_name"/>
+                            </div>
+                        </div>
+                        <div t-if="o.check_ids" class="table">
+                            <table class="table  table-sm">
+                                <thead>
+                                    <tr class="show_borders_tr">
+                                        <th class="show_borders_td"><span>Laboratory Reference</span></th>
+                                        <th class="show_borders_td"><span>Cast Date</span></th>
+                                        <th class="show_borders_td"><span>Test Date</span></th>
+                                        <th class="show_borders_td"><span>Age In Days</span></th>
+                                        <th class="show_borders_td"><span>Area</span></th>
+                                        <th class="show_borders_td"><span>Weight (g)</span></th>
+                                        <th class="show_borders_td"><span>Load (Kn)</span></th>
+                                        <th class="show_borders_td"><span>Bulk Density Kg/M³</span></th>
+                                        <th class="show_borders_td"><span>Compressive Strength N/mm²</span></th>
+                                        <th class="show_borders_td"><span>Remarks</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="o.check_ids" t-as="check">
+                                        <tr class="show_borders_tr">
+                                            <td class="show_borders_td"><span t-esc="check.name"/></td>
+                                            <td class="show_borders_td"><span t-esc="check.picking_id and check.picking_id.date_done"  t-options='{"widget": "date"}'/></td>
+                                            <td class="show_borders_td"><span t-esc="check.create_date" t-options='{"widget": "date"}'/></td>
+                                            <td class="show_borders_td"><span t-esc="check.x_studio_control_point"/></td>
+                                            <td class="show_borders_td">22500</td>
+                                            <td class="show_borders_td"><span t-esc="round(check.x_weight,2)"/></td>
+                                            <td class="show_borders_td"><span t-esc="round(check.x_test_load,2)"/></td>
+                                            <td class="show_borders_td"><span t-esc="round(check.x_density,2)"/></td>
+                                            <td class="show_borders_td"><span t-esc="round(check.measure,2)"/></td>
+                                            <td class="show_borders_td"><span t-esc="(check.additional_note or '')+' '+(check.picking_id and check.picking_id.x_studio_pouring_type and check.picking_id.x_studio_pouring_type.x_name or '')"/></td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+
+                        </div>
+
+                        <div class="row">
+                          <div class="col-4">
+                              <span><b>Tested By:</b></span>
+                              <span t-esc="o.check_ids and o.check_ids[0].sudo().x_studio_tested_by and o.check_ids[0].x_studio_tested_by.sudo().name or ''"/>
+                          </div>
+                          <div class="col-4">
+                            <span></span>
+                          </div>
+                          <div class="col-4">
+                            <span><b>Checked By:</b></span>
+                              <span t-esc="o.check_ids and o.check_ids[0].sudo().user_id and o.check_ids[0].sudo().user_id.name or ''"/>
+                          </div>
+                        </div>
+                        <br/><br/><br/>
+                        <div class="row">
+                              <span><b>Note: This is a computer generated report. Company stamp and signature not required.</b></span>
+                        </div>
+                    </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

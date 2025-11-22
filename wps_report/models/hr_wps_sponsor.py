@@ -25,7 +25,7 @@ class HrWpsSponsor(models.Model):
         compute='_compute_display_name',
         store=True
     )
-    bank_account_id = fields.Many2one('res.partner.bank',  string="Bank Account", required=True)
+    bank_account_id = fields.Many2one('res.partner.bank',  string="Bank Account")
 
     employer_eid = fields.Char(string="Employer EID")
     payer_eid = fields.Char(string="Payer EID")
