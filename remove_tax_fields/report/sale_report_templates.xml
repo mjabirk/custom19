@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_saleorder_document_inherit_remove_tax" inherit_id="sale.report_saleorder_document">
+        <!-- Hide Taxes column header -->
+        <xpath expr="//th[@name='th_taxes']" position="attributes">
+            <attribute name="class">d-none</attribute>
+        </xpath>
+        <!-- Hide Taxes value in line items -->
+        <xpath expr="//td[@name='td_taxes']" position="attributes">
+            <attribute name="class">d-none</attribute>
+        </xpath>
+        <!-- Replace tax totals table with a simple total -->
+        <xpath expr="//div[@id='total']//table" position="replace">
+            <table class="table table-sm">
+                <tr class="border-black o_total">
+                    <td><strong>Total</strong></td>
+                    <td class="text-end">
+                        <span t-field="doc.amount_total" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>
+                    </td>
+                </tr>
+            </table>
+        </xpath>
+    </template>
+</odoo>
+

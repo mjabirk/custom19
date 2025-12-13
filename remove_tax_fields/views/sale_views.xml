@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="view_order_form_inherit_no_taxes" model="ir.ui.view">
+            <field name="name">sale.order.form.inherit.no.taxes</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//field[@name='order_line']/list//field[@name='tax_ids']" position="attributes">
+                    <attribute name="column_invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='order_line']/list//field[@name='price_total'][2]" position="attributes">
+                    <attribute name="column_invisible">1</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='order_line']/form//field[@name='tax_ids']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+                <xpath expr="//button[@name='action_update_taxes']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='tax_totals']" position="replace">
+                    <div class="clearfix"/>
+                    <field name="amount_total" decoration-bf="1" style="font-size: 1.3em; float: right;"/>
+                </xpath>
+
+            </field>
+        </record>
+
+        <record id="sale_order_line_view_form_readonly_inherit_no_taxes" model="ir.ui.view">
+            <field name="name">sale.order.line.form.readonly.inherit.no.taxes</field>
+            <field name="model">sale.order.line</field>
+            <field name="inherit_id" ref="sale.sale_order_line_view_form_readonly"/>
+            <field name="arch" type="xml">
+                <field name="tax_ids" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
+                <field name="price_tax" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
+            </field>
+        </record>
+
+<!--        &lt;!&ndash; Inherit Sales Order List View to hide tax-related total columns &ndash;&gt;-->
+<!--        <record id="sale_order_tree_inherit_remove_tax" model="ir.ui.view">-->
+<!--            <field name="name">sale.order.tree.inherit.remove.tax</field>-->
+<!--            <field name="model">sale.order</field>-->
+<!--            <field name="inherit_id" ref="sale.sale_order_tree"/>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <xpath expr="//field[@name='amount_untaxed']" position="attributes">-->
+<!--                    <attribute name="column_invisible">1</attribute>-->
+<!--                </xpath>-->
+<!--                <xpath expr="//field[@name='amount_tax']" position="attributes">-->
+<!--                    <attribute name="column_invisible">1</attribute>-->
+<!--                </xpath>-->
+<!--            </field>-->
+<!--        </record>-->
+
+<!--        &lt;!&ndash; Inherit Sales Order Form View &ndash;&gt;-->
+<!--        <record id="sale_order_form_inherit_remove_tax" model="ir.ui.view">-->
+<!--            <field name="name">sale.order.form.inherit.remove.tax</field>-->
+<!--            <field name="model">sale.order</field>-->
+<!--            <field name="inherit_id" ref="sale.view_order_form"/>-->
+<!--            <field name="arch" type="xml">-->
+<!--                &lt;!&ndash; Hide all tax and amount breakdown columns in the order lines list &ndash;&gt;-->
+<!--                <xpath expr="//field[@name='order_line']//list//field[@name='tax_id']" position="attributes">-->
+<!--                    <attribute name="column_invisible">1</attribute>-->
+<!--                </xpath>-->
+<!--                <xpath expr="//field[@name='order_line']//list//field[@name='price_subtotal']" position="attributes">-->
+<!--                    <attribute name="column_invisible">1</attribute>-->
+<!--                </xpath>-->
+<!--                &lt;!&ndash; This hides both the main and the optional "Tax Incl." price_total fields &ndash;&gt;-->
+<!--                <xpath expr="//field[@name='order_line']//list//field[@name='price_total']" position="attributes">-->
+<!--                    <attribute name="column_invisible">1</attribute>-->
+<!--                </xpath>-->
+
+<!--                &lt;!&ndash; Add back a single 'Amount' column after the discount column to show the final line price &ndash;&gt;-->
+<!--                <xpath expr="//field[@name='order_line']//list//field[@name='discount']" position="after">-->
+<!--                    <field name="price_total" string="Amount"/>-->
+<!--                </xpath>-->
+
+<!--                &lt;!&ndash; Replace the entire tax totals group with a simple total amount &ndash;&gt;-->
+<!--                <xpath expr="//group[@name='sale_total']" position="replace">-->
+<!--                    <group class="oe_subtotal_footer" colspan="2" name="sale_total">-->
+<!--                        <div class="oe_subtotal_footer_separator oe_inline">-->
+<!--                            <label for="amount_total"/>-->
+<!--                        </div>-->
+<!--                        <field name="amount_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>-->
+<!--                    </group>-->
+<!--                </xpath>-->
+
+<!--                &lt;!&ndash; Hide Fiscal Position in the "Other Info" tab &ndash;&gt;-->
+<!--                <xpath expr="//field[@name='fiscal_position_id']" position="attributes">-->
+<!--                    <attribute name="invisible">1</attribute>-->
+<!--                </xpath>-->
+<!--            </field>-->
+<!--        </record>-->
+
+    </data>
+</odoo>
+

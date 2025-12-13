@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="hr_attendance_analysis_view_search" model="ir.ui.view">
+        <field name="name">hr.attendance.analysis.view.search</field>
+        <field name="model">hr.attendance.analysis</field>
+        <field name="arch" type="xml">
+            <search string="HR Attendance Search">
+                <field name="employee_id"/>
+                <field name="department_id" operator="child_of"/>
+                <filter name="rec_date" string="Date" date="rec_date" default_period="last_month"/>
+                <group expand="0" string="Group By">
+                    <filter string="Employee" name="groupby_employee" context="{'group_by': 'employee_id'}"/>
+                    <filter string="Date" name="groupby_date" context="{'group_by': 'rec_date'}"/>
+                    <separator/>
+                    <filter string="Delay" name="delay_filter" domain="[('delay_hours','>',0)]" help="Employees with Delay"/>
+                    <filter string="Early Leaving" name="early_leaving_hours_filter" domain="[('early_leaving_hours','>',0)]" help="Employees left early"/>
+                    <filter string="Absent Hours" name="absent_hours_filter" domain="[('absent_hours','>',0)]" help="Employees who are absent"/>
+                    <filter string="Extra Hours" name="extra_hours_filter" domain="[('extra_hours','>',0)]" help="Employees who worked extra"/>
+                    <filter string="Hours Worked" name="total_hours_filter" domain="[('total_hours','>',0)]" help="Employees who worked"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="hr_attendance_analysis_view_pivot" model="ir.ui.view">
+        <field name="name">hr.attendance.analysis.view.pivot</field>
+        <field name="model">hr.attendance.analysis</field>
+        <field name="arch" type="xml">
+            <pivot string="Attendance" js_class="attendance_report_pivot">
+                <field name="employee_id" type="row"/>
+                <field name="rec_date" type="col"/>
+                <field name="total_hours" type="measure" widget="float_time"/>
+                <field name="extra_hours" type="measure" widget="float_time"/>
+                <field name="delay_hours" type="measure" widget="float_time"/>
+                <field name="early_leaving_hours" type="measure" widget="float_time"/>
+                <field name="absent_hours" type="measure" widget="float_time"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="hr_attendance_analysis_view_graph" model="ir.ui.view">
+        <field name="name">hr.attendance.analysis.view.graph</field>
+        <field name="model">hr.attendance.analysis</field>
+        <field name="arch" type="xml">
+            <graph string="Attendance Statistics" stacked="0" js_class="attendance_report_graph">
+                <field name="employee_id"/>
+                <field name="rec_date"/>
+                <field name="delay_hours" type="measure" />
+                <field name="early_leaving_hours" type="measure" />
+                <field name="total_hours" type="measure" />
+                <field name="extra_hours" type="measure" />
+                <field name="absent_hours" type="measure" />
+            </graph>
+        </field>
+    </record>
+
+    <record id="hr_attendance_analysis_action" model="ir.actions.act_window">
+        <field name="name">Attendance Analysis</field>
+        <field name="res_model">hr.attendance.analysis</field>
+        <field name="view_mode">graph,pivot</field>
+        <field name="search_view_id" ref="hr_attendance_analysis_view_search"/>
+        <field name="context">{'group_by': ['rec_date:day', 'employee_id'], 'search_default_date': '1'}</field>
+    </record>
+
+    <record id="hr_attendance_analysis_action_filtered" model="ir.actions.act_window">
+        <field name="name">Attendance Analysis</field>
+        <field name="res_model">hr.attendance.analysis</field>
+        <field name="view_mode">graph,pivot</field>
+        <field name="search_view_id" ref="hr_attendance_analysis_view_search"/>
+        <field name="context">{
+            'group_by': ['rec_date:day', 'employee_id'],
+            'search_default_department_id': [active_id]}
+        </field>
+    </record>
+
+    <menuitem
+        id="menu_hr_attendance_hour_report"
+        name="Attendance Time Analysis"
+        sequence="30"
+        parent="hr_attendance.menu_hr_attendance_root"
+        action="hr_attendance_analysis_action"
+        groups="hr_attendance.group_hr_attendance_officer"/>
+</odoo>

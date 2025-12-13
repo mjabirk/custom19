@@ -3,7 +3,7 @@
     'name': 'Woqod Fuel Import',
     'summary': 'Woqod Fuel Import',
     'description': """Woqod Fuel Import""",
-    'version': '17.01',
+    'version': '19.01',
     'sequence': 1,
     'email': 'info@misnedtech.com ',
     'website':'',

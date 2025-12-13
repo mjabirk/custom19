@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_attendance_machine_data_user,attendance_machine_data_user,model_attendance_machine_data,base.group_user,1,0,1,0
+access_attendance_machine_data_manager,attendance_machine_data_manager,model_attendance_machine_data,hr.group_hr_manager,1,1,1,1
+access_attendance_machines_mananger,attendance_attendance.machines.manager,model_attendance_machines,hr.group_hr_manager,1,1,1,1

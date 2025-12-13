@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Inherit Purchase Order Form View -->
+        <record id="view_purchase_order_form_inherit_no_taxes" model="ir.ui.view">
+            <field name="name">purchase.order.form.inherit.no.taxes</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//field[@name='order_line']/list//field[@name='tax_ids']" position="attributes">
+                    <attribute name="column_invisible">1</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='order_line']/form//field[@name='tax_ids']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='tax_totals']" position="replace">
+                    <div class="clearfix"/>
+                    <div class="d-flex justify-content-end">
+                        <span class="fw-bold me-2">Total: </span>
+                        <field name="amount_total" widget="monetary" options="{'currency_field': 'currency_id'}" class="fw-bold"/>
+                    </div>
+                </xpath>
+
+            </field>
+        </record>
+        <!-- Inherit Purchase Order List View to hide Untaxed Amount -->
+        <record id="purchase_order_tree_inherit_remove_tax" model="ir.ui.view">
+            <field name="name">purchase.order.tree.inherit.remove.tax</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='amount_untaxed']" position="attributes">
+                    <attribute name="column_invisible">1</attribute>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>
+
