@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_fleet_service_products_user,fleet_service_products_user,model_fleet_service_products,base.group_user,1,0,0,0
+access_fleet_service_products_fleet,fleet_service_products_user,model_fleet_service_products,fleet.fleet_group_user,1,1,1,1

@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_offer_letter_user,access.offer.letter.user,model_offer_letter,hr.group_hr_user,1,1,1,1
+access_offer_letter_manager,access.offer.letter.manager,model_offer_letter,hr.group_hr_manager,1,1,1,1

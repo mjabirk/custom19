@@ -1,6 +1,6 @@
 {
     "name": "fleet productivity",
-    "version": "17.03",
+    "version": "1.0",
     "depends": [
         "fleet",
         "account",

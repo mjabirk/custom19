@@ -1,0 +1,145 @@
+<odoo>
+	<data>
+		<record id="view_partner_evaluation_document_form" model="ir.ui.view">
+            <field name="name">res.partner.evaluation</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook[last()]" position="inside">
+                    <page string="Customer Evaluation" name="evaluation_documents" groups="account.group_account_user" invisible="parent_id" >
+						<field name="customer_evaluation_line_ids" mode="list,form">
+							<list string="Evaluation Lines" >
+								<field name="company_id" />
+								<field name="first_invoice_date"/>
+								<field name="last_invoice_date"/>
+								<field name="turnover_180_days"/>
+								<field name="turnover_360_days"/>
+								<field name="total_turnover"/>
+								<field name="total_due"/>
+							</list>
+							<form string="Customer Evaluation">
+								<group string="Customer Evaluation">
+									<field name="company_id" />
+									<field name="first_invoice_date"/>
+									<field name="last_invoice_date"/>
+									<field name="turnover_180_days"/>
+									<field name="turnover_360_days"/>
+									<field name="total_turnover"/>
+									<field name="total_due"/>
+								</group>
+							 </form>
+						</field>
+						<group>
+							<group>
+								<field name="first_invoice_date"/>
+								<field name="last_invoice_date"/>
+								<field name="turnover_180_days"/>
+								<field name="turnover_360_days"/>
+								<field name="total_turnover"/>
+							</group>
+							<group>
+							  <label for="customer_suspicious_line_ids" colspan="2">Suspicious Activity</label>
+								<field name="customer_suspicious_line_ids" mode="list,form" nolabel="1" colspan="2">
+									<list string="Suspicious Activity">
+										<field name="date"/>
+										<field name="action"/>
+										<field name="reason"/>
+									</list>
+									<form string="Customer Evaluation">
+										<group string="Customer Evaluation">
+											<field name="date"/>
+											<field name="action"/>
+											<field name="reason"/>
+										</group>
+									 </form>
+								</field>
+							</group>
+						</group>
+<!--						<button name="compute_evaluation_lines" type="object" string="Compute Evaluation Lines" />-->
+                    </page>
+                </xpath>
+				<xpath expr="//field[@name='ref']" position="before">
+                	<field name="available_credit" readonly="1"/>
+            	</xpath>
+
+            </field>
+        </record>
+
+		<!-- Customer Evaluation View-->
+
+		<record id="customer_evaluation_lines_filter" model="ir.ui.view">
+			<field name="name">customer.evaluation.lines.search</field>
+			<field name="model">customer.evaluation.lines</field>
+			<field name="arch" type="xml">
+				<search string="Search Customer Evaluation">
+                	<filter string="First Invoice Date" name="first_invoice_date" date="first_invoice_date"/>
+                	<filter string="Last Invoice Date" name="last_invoice_date" date="last_invoice_date"/>
+					<filter string="Archived" name="inactive" domain="[('active','=', False)]"/>
+					<field name="partner_id"/>
+					<field name="company_id"/>
+					<field name="turnover_360_days"/>
+					<field name="turnover_180_days"/>
+					<field name="total_turnover" />
+					<filter string="First Invoice Date" name="first_invoice_date" context="{'group_by':'first_invoice_date:month'}"/>
+					<filter string="Last Invoice Date" name="last_invoice_date" context="{'group_by':'last_invoice_date:month'}"/>
+					<filter string="Company" name="company_id" context="{'group_by':'company_id'}"/>
+				</search>
+			</field>
+		</record>
+
+		<record id="customer_evaluation_lines_tree" model="ir.ui.view">
+			<field name="name">customer.evaluation.lines.tree</field>
+			<field name="model">customer.evaluation.lines</field>
+			<field name="arch" type="xml">
+				<list string="Customer Evaluation">
+					<field name="partner_id"/>
+					<field name="company_id"/>
+					<field name="first_invoice_date"/>
+					<field name="last_invoice_date"/>
+					<field name="turnover_360_days"/>
+					<field name="turnover_180_days"/>
+					<field name="total_turnover" />
+					<field name="total_due"/>
+				</list>
+			</field>
+		</record>
+
+
+		<record id="customer_evaluation_lines_form" model="ir.ui.view">
+				<field name="name">customer.evaluation.lines.form</field>
+				<field name="model">customer.evaluation.lines</field>
+				<field name="arch" type="xml">
+					<form>
+                    	<sheet>
+							<widget name="web_ribbon" title="Archived" bg_color="bg-danger" invisible="active"/>
+							<group >
+								<group>
+									<field name="active" invisible="1"/>
+									<field name="partner_id"/>
+									<field name="company_id"/>
+									<field name="first_invoice_date"/>
+									<field name="last_invoice_date"/>
+									<field name="turnover_360_days"/>
+									<field name="turnover_180_days"/>
+									<field name="total_turnover" />
+									<field name="total_due"/>
+								</group>
+							</group>
+						</sheet>
+					</form>
+				</field>
+			</record>
+
+		<record id="action_customer_evaluation_lines_tree" model="ir.actions.act_window">
+			<field name="name">Customer Evaluation</field>
+			<field name="res_model">customer.evaluation.lines</field>
+			<field name="view_mode">list,form</field>
+			<field name="view_id"></field>
+			<field name="search_view_id" ref="customer_evaluation_lines_filter"/>
+			<field name="context">{'group_by':[]}</field>
+		</record>
+	    <menuitem action="action_customer_evaluation_lines_tree" id="menu_customer_evaluation_lines"  groups="account.group_account_user"  parent="contacts.menu_contacts" sequence="2"/>
+    	<menuitem id="contacts.res_partner_menu_config" name="Configuration" parent="contacts.menu_contacts" groups="base.group_system" sequence="20"/>
+	</data>
+</odoo>
+

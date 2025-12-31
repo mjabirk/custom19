@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hr_wps_config_form" model="ir.ui.view">
+        <field name="name">hr.wps.config.form</field>
+        <field name="model">hr.wps.config</field>
+        <field name="arch" type="xml">
+            <form string="WPS Configuration">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="wps_employer_id"/>
+                        </group>
+                        <group>
+                            <field name="wps_bank_short_name"/>
+                            <field name="wps_payer_iban"/>
+                            <field name="wps_payer_id"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_hr_wps_config_tree" model="ir.ui.view">
+        <field name="name">hr.wps.config.tree</field>
+        <field name="model">hr.wps.config</field>
+        <field name="arch" type="xml">
+            <tree string="WPS Configuration">
+                <field name="name"/>
+                <field name="wps_employer_id"/>
+                <field name="wps_bank_short_name"/>
+                <field name="wps_payer_iban"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_hr_wps_config" model="ir.actions.act_window">
+        <field name="name">WPS Configurations</field>
+        <field name="res_model">hr.wps.config</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_hr_wps_config"
+              name="WPS Configurations"
+              parent="hr_payroll.menu_hr_payroll_configuration"
+              action="action_hr_wps_config"
+              sequence="50"/>
+</odoo>

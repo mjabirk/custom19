@@ -1,0 +1,638 @@
+####    Update operation time on delivery note
+
+lookup_timestart=datetime.datetime.now() - datetime.timedelta(days=5)
+picking_ids = model.search([
+('picking_type_id.code','=','outgoing'),
+('state','=','done'),
+('date_done','>=',lookup_timestart),],order='date_done desc')
+for picking in picking_ids:
+  tickets = env['x_alkon.raw.data'].search([('x_record_type','=','Ticket'),('x_studio_delivery_ref_dn','=',picking.name)],order='x_date')
+  if tickets and picking.date_done:
+    diff = picking.date_done - tickets[0].x_date
+    picking.write({'x_studio_operation_time':diff.total_seconds()/60})
+
+
+
+
+####   Update distance in raw data
+lookup_time=datetime.datetime.now() - datetime.timedelta(hours=3)
+delivery_ids = env['stock.picking'].search([('x_studio_distance_km','!=',0),('write_date','>=',lookup_time),'|',('x_studio_alkon_no','!=',False),('x_studio_alkon_no_2','!=',False)])
+for delivery in delivery_ids:
+  raw_data_ids =  model.search(['|',('x_order_ref','=',delivery.x_studio_alkon_no_2),('x_order_ref','=',delivery.x_studio_alkon_no),('x_record_type','=','Ticket')])
+  if raw_data_ids:
+    raw_data_ids.write({'x_studio_distance_km':delivery.x_studio_distance_km})
+    if raw_data_ids.x_productivity_id:
+        raw_data_ids.x_productivity_id.write({'x_studio_planned_distance':delivery.x_studio_distance_km})
+
+
+
+
+####    Update delivery and ticket reference in raw data
+lookup_timestart=datetime.datetime.now() - datetime.timedelta(days=15)
+# raw_data_ids = model.search([('x_studio_delivery_ref_dn','=',False),('x_record_type','=','Ticket')],limit = 5000)
+# for raw_data in  raw_data_ids:
+#   delivery_ids = env['stock.picking'].search([('x_studio_alkon_no','=',raw_data.x_order_ref)],limit = 1000)
+#   if delivery_ids:
+#     name_list=[d.name for d in delivery_ids]
+#     name_str = ', '.join(name_list)
+#     raw_data.write({'x_studio_delivery_ref_dn':name_str})
+
+# loggg = model.search([('id','=',6)])
+# loggg.write({'x_studio_log':str(raw_data_ids.ids)})
+
+raw_data_ids = model.search([
+('x_record_type','=','Inventory'),
+('x_inventory_trans_type','in',('A','U')),
+('x_studio_delivery_ref_dn','in',(None,False,0,'')),
+#('x_studio_mix_code','in',(None,False,0,'')),
+#('x_studio_checked','=',False),
+('x_date','>=',lookup_timestart),
+#('id','=',883850)
+],order='x_date desc')
+#raw_data_ids =  model.search([('id','=',61775)])
+
+processed_ids = []
+#raw_data_ids = []
+datastr=[raw_data_ids.ids]
+count=0
+for raw_data in raw_data_ids:
+  raw_data.write({'x_studio_checked':True})
+  if raw_data.x_inventory_ticket_ref and not raw_data.x_studio_delivery_ref_dn:# or not raw_data.x_studio_mix_code:
+    count += 1
+    if count == 500:
+      break
+   # processed_ids.append(raw_data.id)
+    ticket_raw_data = model.search([('x_alkon_id','=',raw_data.x_inventory_ticket_ref),('x_record_type','=','Ticket'),('x_studio_production_plant','=',raw_data.x_studio_production_plant)])
+    datastr.append(ticket_raw_data.ids)
+    datastr.append(ticket_raw_data.x_order_ref)
+    name_str = ''
+    delivery_ref_updated = False
+    if not ticket_raw_data.x_studio_delivery_ref_dn and ticket_raw_data.x_order_ref:
+      delivery_ids = env['stock.picking'].search(['|',('x_studio_alkon_no_2','=',ticket_raw_data.x_order_ref),('x_studio_alkon_no','=',ticket_raw_data.x_order_ref)],limit = 1000)
+      if len(delivery_ids) >= 12:
+        raw_data.write({'x_studio_checked':False})
+      elif delivery_ids:
+        name_list=[d.name for d in delivery_ids]
+        name_str = ', '.join(name_list)
+        if not ticket_raw_data.x_delivery_ref:
+          name_list=[d.origin for d in delivery_ids if d.origin]
+          name_str_orig = ', '.join(name_list)
+          ticket_raw_data.write({'x_delivery_ref':name_str_orig,'x_studio_delivery_ref_dn':name_str})
+          delivery_ref_updated = True
+        else:
+          ticket_raw_data.write({'x_studio_delivery_ref_dn':name_str})
+
+    if not ticket_raw_data.x_delivery_ref and not delivery_ref_updated and ticket_raw_data.x_order_ref:
+      delivery_ids = env['stock.picking'].search(['|',('x_studio_alkon_no_2','=',ticket_raw_data.x_order_ref),('x_studio_alkon_no','=',ticket_raw_data.x_order_ref)],limit = 1000)
+
+      if len(delivery_ids) >= 12:
+        raw_data.write({'x_studio_checked':False})
+      elif delivery_ids:
+        name_list=[d.origin for d in delivery_ids if d.origin]
+        name_str = ', '.join(name_list)
+        ticket_raw_data.write({'x_delivery_ref':name_str})
+
+    raw_data.write({'x_studio_mix_code':ticket_raw_data.x_item_code,'x_delivery_ref':ticket_raw_data.x_delivery_ref,'x_studio_delivery_ref_dn':ticket_raw_data.x_studio_delivery_ref_dn or name_str})
+
+# loggg = model.search([('id','=',6)])
+# loggg.write({'x_studio_log':str(ticket_raw_data)})
+
+
+####    Process Raw Data
+#188451, 0020664226
+local_context_tz = timezone('Asia/Qatar')
+utc_context_tz = timezone('UTC')
+
+rec_ids = model.search([('x_status','!=','done'),'|','|',('x_record_type','=','Ticket'),('x_record_type','=','Pump'),'&',('x_record_type','=','Inventory'),('x_inventory_trans_type','=','R')], limit=500)
+#rec_ids = model.search([('id','in',(2038910,2035545))], limit=1000)
+log_rec = model.search([('id','=',4)])
+#type_id  = env['overtime.bonus.type'].search([('rate','=',1),('type','=','fixed')], limit=1)
+
+for rec_id in rec_ids:
+  if rec_id.x_productivity_id:
+     rec_id.x_productivity_id.unlink()
+  #  continue
+  employee_id=vehicle_id=False
+  if rec_id.x_record_type == 'Inventory' and rec_id.x_inventory_trans_type == 'R':
+      if rec_id.x_hauler_code or rec_id.x_employee:
+        employee_id = env['hr.employee'].search(['|',('identification_id','=',rec_id.x_hauler_code or rec_id.x_employee),('barcode','=',rec_id.x_hauler_code or rec_id.x_employee)])
+  else:
+      if rec_id.x_employee:
+        employee_id = env['hr.employee'].search(['|',('identification_id','=',rec_id.x_employee),('barcode','=',rec_id.x_employee)])
+  if rec_id.x_vehicle:
+    vehicle_id = env['fleet.vehicle'].search(['|',('license_plate','=',rec_id.x_vehicle),('x_studio_vehicle_code','=',rec_id.x_vehicle)])
+
+  calculation_type = 'quantity'
+  quantity = rec_id.x_quantity
+  name = rec_id.x_employee
+
+  if rec_id.x_record_type == 'Ticket':
+    name = rec_id.x_ticket_ref
+    calculation_type = 'M' in rec_id.x_vehicle and 'trips' or 'quantity'
+    rec_id.write({'x_inventory_trans_type':'Ticket'})
+  elif rec_id.x_record_type=='Inventory':
+    name = rec_id.x_external_ref
+    quantity = rec_id.x_quantity/1000
+  elif rec_id.x_record_type=='Pump':
+    if not quantity and rec_id.x_trips:
+      calculation_type = 'trips'
+  if employee_id or vehicle_id:
+    rate = employee_id and employee_id[0].job_id and employee_id[0].job_id.x_studio_rate or 0
+    data_var  = {
+      'x_name':name,
+      'x_quantity':quantity,
+      'x_calculation_type':calculation_type,
+      'x_employee_id':employee_id and employee_id[0].id,
+      'x_employee_job_id':employee_id and employee_id[0].job_id and employee_id[0].job_id.id or None,
+      'x_vehicle_id':vehicle_id and vehicle_id[0].id,
+      'x_trips':rec_id.x_trips,
+      'x_date':rec_id.x_date,# and rec_id.x_date.replace(tzinfo=utc_context_tz).astimezone(local_context_tz),
+      'x_rate':rate,
+      'x_amount':rate*(calculation_type == 'quantity' and quantity or rec_id.x_trips),
+      'x_studio_note':'Created after fixing issue',
+       'x_copied':True,
+    }
+    # if type_id and data_var['x_employee_id']:
+    #   inc_rec_data = {
+    #     'name':data_var['x_name'],
+    #     'date_from':data_var['x_date'],
+    #     'company_id':5,
+    #     'type':'productivity',
+    #     'duration':0,
+    #     'amount':data_var['x_quantity'],
+    #     'employee_id':data_var['x_employee_id'],
+    #     'state':'approved',
+    #     'type_id':type_id[0].id,
+    #   # 'notes':'Delivery Order: {}'.format(rec_data['x_studio_delivery_note']),
+    #     'trips':data_var['x_trips'],
+    #     'rate':data_var['x_rate'],
+    #     'calculation_type':data_var['x_calculation_type'],
+    #     'vehicle_id':data_var['x_vehicle_id'],
+    #     'from_raw_data':True,
+    #   }
+    #   ob_id = env['overtime.bonus'].create(inc_rec_data)
+    #   rec_id.write({'x_studio_incentives':ob_id.id})
+    x_productivity_id = env['x_productivity.record'].create(data_var)
+    rec_id.write({'x_status':'done','x_productivity_id':x_productivity_id.id})
+  else:
+    rec_id.write({'x_status':'done','x_studio_log':'Unable to find Employee and Vehicle'})
+log_rec.write({'x_studio_log':str(rec_ids)})
+
+
+
+####    Lock Trading Sales Order
+orders = env['sale.order'].search([('state', '=', 'sale'), ('locked','=',False), ('company_id', 'in', (7,6)),('is_subscription','=',False)])
+for order in orders:
+  lock = True
+  for line in order.order_line:
+    if line.product_uom_qty and (line.qty_invoiced != line.qty_delivered or line.product_uom_qty != line.qty_delivered):
+      lock = False
+  if lock: order.action_lock()
+
+
+
+
+####    Lock Sales Order
+lookup_time = datetime.datetime.now() - datetime.timedelta(days=8)
+
+created_receipts = []
+error_messages = []
+log_rec = model.search([('id','=',2)])
+log_data = 'start\n'
+orders = env['sale.order'].search([('state', '=', 'sale'), ('locked','=',False), ('company_id', '=', 5),('is_subscription','=',False),('commitment_date','>=',lookup_time)])
+for order in orders:
+  reason = ''
+  lock = True
+  compare_data = {}
+  for line in order.order_line:
+    if line.product_id.type in ('consu','service'):
+      if line.product_uom_qty and line.qty_delivered and line.qty_invoiced != line.qty_delivered:
+        lock = False
+        reason = 'Extra products not invoiced\n'
+      elif line.product_uom_qty and not line.qty_delivered:
+        lock = False
+        #reason = 'Products not delivered\n'
+
+    elif line.product_id.default_code in compare_data:
+      compare_data[line.product_id.default_code]['qty_invoiced'] += line.qty_invoiced
+      compare_data[line.product_id.default_code]['qty_delivered'] += line.qty_delivered
+    else:
+      compare_data[line.product_id.default_code] = {'qty_delivered':line.qty_delivered,
+      'product_uom_qty':line.product_uom_qty,
+                      'qty_invoiced':line.qty_invoiced,
+                      'rd_qty_delivered':0.0
+      }
+
+  for picking in order.picking_ids:
+    if picking.state == 'done':
+      raw_datas = model.search([('x_studio_delivery_ref_dn','=',picking.name),
+                  ('x_inventory_trans_type','!=','R'),
+                  ('x_item_code','=',picking.x_studio_main_product.default_code),
+                  ('x_record_type','=','Ticket'),
+                  ])
+      rd_delivered_qty=0
+      if picking.x_studio_main_product.default_code not in compare_data:
+        compare_data[picking.x_studio_main_product.default_code]={'qty_delivered':0,
+                                                                  'product_uom_qty':0,
+                                                                  'qty_invoiced':0,
+                                                                  'rd_qty_delivered':0.0}
+      for raw_data in  raw_datas:
+        compare_data[picking.x_studio_main_product.default_code]['rd_qty_delivered'] += raw_data.x_quantity
+    elif picking.state != 'cancel':
+      lock = False
+  #    reason = 'Pending Delivery'
+  if lock and compare_data:
+    for main_code in compare_data.keys():
+      if compare_data[main_code]['qty_delivered'] == compare_data[main_code]['qty_invoiced'] and compare_data[main_code]['qty_invoiced'] == compare_data[main_code]['rd_qty_delivered']:
+        pass
+      else:
+        if compare_data[main_code]['qty_delivered'] != compare_data[main_code]['rd_qty_delivered']:
+          reason += ' {} delivered = {}, alkon delivered = {}.'.format(main_code, str(compare_data[main_code]['qty_delivered']),str(compare_data[main_code]['rd_qty_delivered']))
+        lock = False
+  log_data += str(compare_data)
+  if lock: order.action_lock()
+  elif not order.x_manual_check:
+    if reason:
+      order.write({'x_manual_check':True})
+      #order.message_post(body="Not locked. "+ reason, partner_ids=(9652,))
+
+
+log_rec and log_rec.write({'x_studio_log': log_data})
+
+
+
+####    Create vehicle scheduled service
+for rec in model.search([('state_id.name','!=','SOLD'),('x_studio_service_frequency','>',0),('company_id','=',5)]):
+  if (rec.odometer - rec.x_studio_last_service_odometer + 500) >= rec.x_studio_service_frequency and rec.x_studio_maintenance_created_odometer < rec.x_studio_last_service_odometer:
+    created_rec = env['maintenance.request'].create({
+      'name':'Scheduled maintenance for {}'.format(rec.x_studio_vehicle_code or license_plate),
+      'x_studio_vehicle_id':rec.id,
+      'maintenance_type':'preventive',
+      'maintenance_team_id':3,
+      'description':"Current Odoometer: {}\nLast service Odoometer: {}".format(rec.odometer,rec.x_studio_last_service_odometer),
+    })
+    rec.write({'x_studio_maintenance_created_odometer':rec.odometer})
+    created_rec.message_subscribe([x.partner_id.id for x in created_rec.maintenance_team_id.member_ids])
+    created_rec.message_post(body='Please schedule maintenance for this vehicle.',partner_ids = [x.partner_id.id for x in created_rec.maintenance_team_id.member_ids])
+
+
+
+####    Create vehicle inspection (Maintenance)
+# ID 103  = Mr. INDERJEET SINGH
+
+for rec in model.search([('state_id.name','not in',['SOLD', 'Parking', 'Maintenance', 'Repair', 'Brakedown']),('x_studio_weekly_inspection','=',True),('company_id','=',5)]):
+    created_rec = env['maintenance.request'].create({
+      'name':'{} Inspection'.format(rec.x_studio_vehicle_code or license_plate),
+      'x_studio_vehicle_id':rec.id,
+      'maintenance_type':'preventive',
+      'maintenance_team_id':6,
+      'equipment_id':108,
+      'duration':0.1666666667,
+      'user_id':103,
+      'description':'<ul class="o_checklist"><li id="checkId-1">Tire depth</li><li id="checkId-2">Wind shield</li><li id="checkId-3">Lights</li><li id="checkId-4">Body</li><li id="checkId-5">Drum clean</li><li id="checkId-6">Interior clean</li><li id="checkId-7">Air condition</li><li id="checkId-8">Hydraulic system</li><li id="checkId-9">Oil check</li><li id="checkId-10">Water check</li><li id="checkId-11">Fire extinguishers</li><li id="checkId-12">Reverse&nbsp;horns</li><li id="checkId-13">Smoke</li><li id="checkId-14">Breaks</li><li id="checkId-15">Seat belt</li><li id="checkId-16">Greasing</li><li id="checkId-17">Double Chute</li></ul>',
+    })
+  # rec.write({'x_studio_maintenance_created_odometer':rec.odometer})
+    created_rec.message_subscribe([x.partner_id.id for x in created_rec.maintenance_team_id.member_ids])
+    created_rec.message_post(body='Please schedule inspection for this vehicle.',partner_ids = [x.partner_id.id for x in created_rec.maintenance_team_id.member_ids])
+
+
+
+#  Scheduling maintenance
+starting_time = 4
+starting_minute = 0
+
+created_rec = env['maintenance.request'].search([('maintenance_team_id','=',6),('schedule_date','=',False),('stage_id.sequence','in',(0,1))])
+tot_count = len(created_rec)
+ndays = 6
+daily_inspection = int(tot_count/ndays) + (tot_count/ndays>0)
+day_count = 0
+
+inspection_time = datetime.datetime.now().replace(hour=starting_time, minute=starting_minute, second=0)
+for mrec in created_rec:
+    day_count += 1
+
+    mrec.write({'schedule_date':inspection_time})
+    inspection_time = inspection_time + datetime.timedelta(minutes=10)
+    if day_count >= daily_inspection:
+        day_count = 0
+        inspection_time = (inspection_time +datetime.timedelta(days=1)).replace(hour=starting_time, minute=starting_minute)
+
+
+
+####    Create Receipt from Alkon Raw data
+
+created_receipts = []
+error_messages = []
+
+picking_type = env['stock.picking.type'].search([('code', '=', 'incoming'), ('warehouse_id.company_id', '=', 5)])
+if not picking_type:
+    picking_type = env['stock.picking.type'].search([('code', '=', 'incoming'), ('warehouse_id', '=', False)])
+
+
+
+#Make beginning of the month
+lookup_time=datetime.datetime.now().replace(day=1,hour=0,minute=0,second=0) - datetime.timedelta(hours=3.5)
+lookup_time_end = datetime.datetime.now().replace(day=28,hour=23,minute=59,second=59) + datetime.timedelta(days=4)
+lookup_time_end = lookup_time_end - datetime.timedelta(days=lookup_time_end.day)- datetime.timedelta(hours=3.5)
+
+
+
+
+
+# Now rec_ids will have list of all the receips from raw data
+
+#product_list = {}
+# A blank dictionary to store product quantity by products
+
+
+negative_rec_ids = model.search([('x_record_type','=','Inventory'),
+('x_inventory_trans_type','=','R'),
+('x_studio_receipt_recorded','=',False),
+('x_date','>=',lookup_time),
+('x_date','<',datetime.datetime.now()),
+('x_quantity','<',0)])
+
+for rec_id in negative_rec_ids:
+  matching_rec_ids = model.search([ ('x_record_type','=','Inventory'),
+                                    ('x_inventory_trans_type','=','R'),
+                                    ('x_studio_receipt_recorded','=',False),
+                                    ('x_external_ref','=',rec_id.x_external_ref),
+                                    ('x_quantity','=',-1*rec_id.x_quantity)],limit=1)
+  if matching_rec_ids:
+    rec_id.write({'x_studio_receipt_recorded':True})
+    matching_rec_ids.write({'x_studio_receipt_recorded':True})
+  else:
+    rec_id.write({'x_studio_log':'Unable to find matching entry for this cancelled record'})
+    error_messages.append('Unable to find matching entry for cancelled record %s with quantity %s'%(rec_id.x_external_ref,rec_id.x_quantity))
+
+logg = [picking_type.ids]
+#rec_ids=[]
+
+
+rec_ids = model.search([('x_record_type','=','Inventory'),
+                        ('x_inventory_trans_type','=','R'),
+                        ('x_studio_receipt_recorded','=',False),
+                        ('x_date','>=',lookup_time),
+                        ('x_date','<',datetime.datetime.now()),
+                        ("x_vendor_name","!=",False),])
+
+for rec_id in rec_ids:
+  if rec_id.x_quantity > 0:
+    # if rec_id.x_item_name in product_list:
+    #   product_list[rec_id.x_item_name][1] += rec_id.x_quantity
+    # else:
+    #   product_list[rec_id.x_item_name] = [rec_id.x_item_code,rec_id.x_quantity]
+
+  #for product in product_list:
+  #  continue
+    product_id = env['product.product'].search([('name','=',rec_id.x_item_name),('default_code','=',rec_id.x_item_code)])
+    if not product_id:
+      product_id = env['product.product'].search([('default_code','=',rec_id.x_item_code)])
+    if not product_id:
+      product_id = env['product.product'].search([('name','=',rec_id.x_item_name)])
+    if product_id:
+      picking_ids = env['stock.picking'].search([('move_line_ids.product_id','=',product_id.id),
+                                                 ('company_id','=',5),
+                                                 ('picking_type_id','in',picking_type.ids),
+                                                 ('partner_id.name','=',rec_id.x_vendor_name),
+                                                 ('scheduled_date','>=',lookup_time),
+                                                 ('scheduled_date','<=',lookup_time_end),
+                                                 ('state','in',['draft','assigned','waiting','confirmed'])],order='scheduled_date desc', limit=1)
+      logg.append('Productsss %s %s %s %s %s %s\n'%(product_id.id, rec_id.x_item_code,str(picking_ids),str(lookup_time),str(lookup_time_end),str(picking_type.ids)))
+      if not picking_ids:
+        error_messages.append('Unable to find picking for %s %s'%(product_id.id, product_id.name))
+        rec_id.write({'x_studio_log':'Unable to find picking for %s %s'%(product_id.id, product_id.name)})
+        continue
+      new_picking = picking_ids.copy()
+      created_receipts.append([picking_ids.id,new_picking.id])
+      new_picking.write({'note':'Ref: %s\nHauler Code:%s\nVehicle:%s'%(rec_id.x_external_ref,rec_id.x_hauler_code,rec_id.x_vehicle),
+                         'x_studio_vendor_reference':rec_id.x_external_ref})
+
+      # #Manually selecting receipt using its ID. This need to be automise by searching receipts which is not done
+      found_line=False
+      for move_line in new_picking.move_ids_without_package:
+        if move_line.product_id.id ==  product_id.id and not found_line:
+          move_line.write({'product_uom_qty':rec_id.x_quantity})
+          found_line = True
+        else:
+          move_line.unlink()
+      new_picking.action_confirm()
+
+      for move_line in new_picking.move_line_ids_without_package:
+        if move_line.product_id.id ==  product_id.id:
+          move_line.write({'qty_done':rec_id.x_quantity})
+          break
+          # Updating receipt lines with product quantity and new lot number.
+          #Now I manually given lot number. This has to be changed so that new lot number is generated each time
+
+
+      new_picking.with_context({"cancel_backorder":True}).button_validate()
+      rec_id.write({'x_studio_receipt_recorded':True,'x_studio_delivery_ref_dn':new_picking.name})
+  else:
+    error_messages.append('Unable to find product for Name:%s. Code:%s.'%(rec_id.x_item_name, rec_id.x_item_code))
+  # #This will post the receipt
+
+
+
+####    Create Pump Lab Operator Productivity
+local_context_tz = timezone('Asia/Qatar')
+utc_context_tz = timezone('UTC')
+rec_ids = model.search([('x_studio_processed','=',False),('x_studio_delivery_order.state','=','done')], limit=200)
+job_id = env['hr.job'].search([('id','=',21)])
+#type_id  = env['overtime.bonus.type'].search([('rate','=',1),('type','=','fixed')], limit=1)
+for rec_id in rec_ids:
+  if rec_id.x_studio_type == 'Pump':
+      quantity = rec_id.x_studio_quantity
+      if not rec_id.x_studio_quantity:
+        if len(rec_id.x_studio_delivery_order.x_studio_operation.filtered(lambda x_studio_operation: x_studio_operation.x_studio_type in ['Pump', '',False])) == 1:
+          quantity = rec_id.x_studio_delivery_order.x_studio_actual_quantity or rec_id.x_studio_delivery_order.x_studio_quantity
+        else:
+          tot_other_qty = 0
+          for operation in  rec_id.x_studio_delivery_order.x_studio_operation.filtered(lambda x_studio_operation: x_studio_operation.x_studio_type in ['Pump', '',False]):
+            if operation.id != rec_id.id:
+              tot_other_qty += operation.x_studio_quantity
+          quantity = (rec_id.x_studio_delivery_order.x_studio_actual_quantity or rec_id.x_studio_delivery_order.x_studio_quantity) - tot_other_qty
+    #  raise Exception(f"Debugging: Variable quantity = {quantity} {rec_id.x_studio_delivery_order.name}")
+      if quantity > 0:
+        employees_count = len(rec_id.x_studio_operators)
+        for operator in rec_id.x_studio_operators:
+          rec_data = {
+          'x_name':'Pump ' + rec_id.x_studio_delivery_order.name + (rec_id.x_studio_delivery_order.x_studio_alkon_no and ' - '+rec_id.x_studio_delivery_order.x_studio_alkon_no or ''),
+          'x_quantity':quantity/employees_count,
+          'x_calculation_type':'quantity',
+          'x_employee_id':operator.id,
+          'x_vehicle_id':rec_id.x_studio_pump and rec_id.x_studio_pump.id,
+          'x_trips':1/employees_count,
+          'x_studio_delivery_note':rec_id.x_studio_delivery_order.id,
+          'x_date':rec_id.x_studio_delivery_order.date_done or  rec_id.x_studio_delivery_order.scheduled_date,
+          'x_employee_job_id':operator.job_id and operator.job_id.id or job_id.id,
+          'x_rate': job_id.x_studio_rate, #operator.job_id and operator.job_id.x_studio_rate,
+          'x_amount':(job_id.x_studio_rate or 0)*quantity/employees_count, #(operator.job_id and operator.job_id.x_studio_rate or 0)*quantity/employees_count
+          'x_copied':True,
+          }
+          x_productivity_id = env['x_productivity.record'].create(rec_data)
+
+
+
+
+
+  if rec_id.x_studio_type == 'Lab':
+      quantity = rec_id.x_studio_quantity
+      if not rec_id.x_studio_quantity:
+        if len(rec_id.x_studio_delivery_order.x_studio_operation.filtered(lambda x_studio_operation: x_studio_operation.x_studio_type == 'Lab')) == 1:
+          quantity = rec_id.x_studio_delivery_order.x_studio_actual_quantity or rec_id.x_studio_delivery_order.x_studio_quantity
+        else:
+          tot_other_qty = 0
+          for operation in  rec_id.x_studio_delivery_order.x_studio_operation.filtered(lambda x_studio_operation: x_studio_operation.x_studio_type == 'Lab'):
+            if operation.id != rec_id.id:
+              tot_other_qty += operation.x_studio_quantity
+          quantity = (rec_id.x_studio_delivery_order.x_studio_actual_quantity or rec_id.x_studio_delivery_order.x_studio_quantity) - tot_other_qty
+#      raise Exception(f"Debugging: Variable quantity = {quantity} {rec_id.x_studio_delivery_order.name}")
+      if quantity > 0:
+        employees_count = len(rec_id.x_studio_operators)
+        for operator in rec_id.x_studio_operators:
+          rec_data = {
+          'x_name':'Lab ' + rec_id.x_studio_delivery_order.name + (rec_id.x_studio_delivery_order.x_studio_alkon_no and ' - '+rec_id.x_studio_delivery_order.x_studio_alkon_no or ''),
+          'x_quantity':quantity/employees_count,
+          'x_calculation_type':'quantity',
+          'x_employee_id':operator.id,
+          'x_vehicle_id':rec_id.x_studio_pump and rec_id.x_studio_pump.id,
+          'x_trips':1/employees_count,
+          'x_studio_delivery_note':rec_id.x_studio_delivery_order.id,
+          'x_date':rec_id.x_studio_delivery_order.date_done or  rec_id.x_studio_delivery_order.scheduled_date,
+          'x_employee_job_id':operator.job_id and operator.job_id.id or job_id.id,
+          'x_rate': 0.4, #operator.job_id and operator.job_id.x_studio_rate,
+          'x_amount':0.4*quantity/employees_count, #(operator.job_id and operator.job_id.x_studio_rate or 0)*quantity/employees_count
+          'x_copied':True,
+          }
+          x_productivity_id = env['x_productivity.record'].create(rec_data)
+
+  #rec_id.x_studio_delivery_order.write({'note':'{} is the id created for {}'.format(str(x_productivity_id),str(rec_data))})
+  #raise Exception(f"Debugging: Variable quantity = {quantity} {rec_id.x_studio_delivery_order.name}")
+  rec_id.write({'x_studio_processed':True})
+
+
+####    Create Plant Operator Productivity 2025
+# 45  = JOY ANTONY
+# 820 = SATISH KUMAR
+# 723 = TINT ZAW
+# 50  = Rumolo
+# 835 = NIYAJ DAWOOD DESAI
+
+# 473 = ALI HASAN MIYA MANSURI (0.05)
+# 460 = PHEKAN MANDAL (0.07)
+# 902 = EMMANUEL GUATATO SANTOS (0.025)
+# 496 = RAKESH KUMAR SINGH (0.025)
+
+
+
+# When 4 person working = .3 and .7
+# when one .7 person leave = .405 and .595
+#ff
+rec_ids = model.search([
+    ('x_studio_operator_productivity_created', '=', False),
+    ('state', '=', 'done'),
+    ('picking_type_id.code', '=', 'outgoing'),
+    ('location_id', '=', 42)
+], limit=20)
+plant_operator_ids_70 = [45,]
+plant_operator_ids_30 = [820, 723, 50, 835]
+other_operators = [(473,0.05), (460,0.07), (902, 0.025), (496, 0.025)]
+ratio_70 = 0.4
+ratio_30 = 0.6
+
+
+# Group operator lists and their respective ratios or rates
+operator_groups = [
+    (plant_operator_ids_70, ratio_70, None),  # None indicates that the rate is fetched from the employee's job
+    (plant_operator_ids_30, ratio_30, None),
+    (other_operators, None, True)  # True indicates fixed rates are provided directly
+]
+
+for rec_id in rec_ids:
+    quantity = rec_id.x_studio_actual_quantity or rec_id.x_studio_quantity
+    for operators, ratio, is_fixed_rate in operator_groups:
+        for operator in operators:
+            if is_fixed_rate:
+                operator_id, rate = operator
+            else:
+                operator_id = operator
+                employee = env['hr.employee'].browse(operator_id)
+                rate = employee.job_id.x_studio_rate
+
+            # Calculate quantities and amounts
+            split_quantity = (quantity * ratio / len(operators)) if ratio else quantity
+            amount = rate * split_quantity
+
+            # Prepare record data
+            rec_data = {
+                'x_name': f"2025 {rec_id.name}{' - ' + rec_id.x_studio_alkon_no if rec_id.x_studio_alkon_no else ''}",
+                'x_quantity': split_quantity,
+                'x_calculation_type': 'quantity',
+                'x_employee_id': operator_id,
+                'x_trips': 0,
+                'x_studio_delivery_note': rec_id.id,
+                'x_date': rec_id.date_done or rec_id.scheduled_date,
+                'x_employee_job_id': employee.job_id.id if not is_fixed_rate else None,
+                'x_rate': rate,
+                'x_amount': amount,
+                'x_copied': True,
+            }
+
+            # Create the productivity record
+            env['x_productivity.record'].create(rec_data)
+    rec_id.write({'x_studio_operator_productivity_created':True})
+
+
+
+####    Count Raw Data
+lookup_time_start=datetime.datetime.now().replace(hour=0,minute=0,second=0) - datetime.timedelta(days=1)
+lookup_time_end=lookup_time_start.replace(hour=23,minute=59,second=59)
+
+
+rec_ids = model.search([('x_date','>=',lookup_time_start),('x_date','<=',lookup_time_end),('x_inventory_trans_type','=','Ticket'),('x_studio_production_plant','=','Plant 1')])
+total_tickets = len(rec_ids)
+rec_ids = model.search([('x_date','>=',lookup_time_start),('x_date','<=',lookup_time_end),('x_inventory_trans_type','=','R'),('x_studio_production_plant','=','Plant 1')])
+total_R = len(rec_ids)
+rec_ids = model.search([('x_date','>=',lookup_time_start),('x_date','<=',lookup_time_end),('x_inventory_trans_type','=','A'),('x_studio_production_plant','=','Plant 1')])
+total_A = len(rec_ids)
+rec_ids = model.search([('x_date','>=',lookup_time_start),('x_date','<=',lookup_time_end),('x_inventory_trans_type','=','U'),('x_studio_production_plant','=','Plant 1')])
+total_U = len(rec_ids)
+
+
+channel = env["discuss.channel"].sudo().search([('sfu_channel_uuid', '=', 'R123')], limit=1)
+channel.message_post(body=f"Odoo Records in plant 1", message_type='comment',subtype_xmlid='mail.mt_comment',)
+channel.message_post(body=f"Total Ticket: {total_tickets} | Total A:{total_A} | Total U: {total_U} | Total R:{total_R}", message_type='comment',subtype_xmlid='mail.mt_comment',)
+
+rec_ids = model.search([('x_date','>=',lookup_time_start),('x_date','<=',lookup_time_end),('x_inventory_trans_type','=','Ticket'),('x_studio_production_plant','=','Plant 2')])
+total_tickets = len(rec_ids)
+rec_ids = model.search([('x_date','>=',lookup_time_start),('x_date','<=',lookup_time_end),('x_inventory_trans_type','=','R'),('x_studio_production_plant','=','Plant 2')])
+total_R = len(rec_ids)
+rec_ids = model.search([('x_date','>=',lookup_time_start),('x_date','<=',lookup_time_end),('x_inventory_trans_type','=','A'),('x_studio_production_plant','=','Plant 2')])
+total_A = len(rec_ids)
+rec_ids = model.search([('x_date','>=',lookup_time_start),('x_date','<=',lookup_time_end),('x_inventory_trans_type','=','U'),('x_studio_production_plant','=','Plant 2')])
+total_U = len(rec_ids)
+
+
+channel = env["discuss.channel"].sudo().search([('sfu_channel_uuid', '=', 'R123')], limit=1)
+channel.message_post(body=f"Odoo Records in plant 2", message_type='comment',subtype_xmlid='mail.mt_comment',)
+channel.message_post(body=f"Total Ticket: {total_tickets} | Total A:{total_A} | Total U: {total_U} | Total R:{total_R}", message_type='comment',subtype_xmlid='mail.mt_comment',)
+
+
+
+
+
+####    Clear refused timeoff
+for rec in model.search([('create_uid','=',1),('state','=','refuse')]):
+  rec.write({'state':'draft'})
+  rec.unlink()
+
+
+####    Automatic Invoice from Sales Order (Readymix)
+
+sales_orders = model.search([("invoice_status","=","to invoice"),("company_id","=",5),("x_studio_automatic_invoice","=",True)])
+#raise UserError(f'orders {sales_orders.ids}')
+#sales_orders = []
+for order in sales_orders:
+    inv_ids = order.with_context(default_journal_id=71)._create_invoices(final=True)
+    inv_ids.action_post()

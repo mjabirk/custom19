@@ -1,0 +1,410 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="offer_letter_table_content">
+        <main>
+            <t t-foreach="docs" t-as="doc">
+                <div class="page">
+                    <table class="table table-sm o_main_table mt-4" style="border: 1px solid black;">
+                        <thead style="display: table-row-group">
+                            <tr>
+                                <th name="th_description" class="text-center"
+                                    style="font-size: 20px !important; border: 1px solid black;">
+                                    <div class="mt-1 mb-1">Job Offer</div>
+                                </th>
+                                <th name="th_quantity" class="text-center "
+                                    style="font-size: 20px !important; border: 1px solid black;">
+                                    <div class="mt-1 mb-1">عــرض عـمـل</div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td name="td_name" style="width:50%; border: 1px solid black;">
+                                    <div class="mt-1 mb-1">Date:
+                                        <b>
+                                            <span t-field="doc.date"/>
+                                        </b>
+                                    </div>
+                                </td>
+                                <td name="td_name" class="text-end ">
+                                    <div class="mt-1 mb-1">
+                                        <b>
+                                            <span t-field="doc.date"/>
+                                        </b>
+                                        :التاريـخ
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td name="td_name" style="border: 1px solid black;">
+                                    <div class="mt-1 mb-1">Name:
+                                        <b>
+                                            <span t-field="doc.name"/>
+                                        </b>
+                                    </div>
+                                </td>
+                                <td name="td_name" class="text-end ">
+                                    <div class="mt-1 mb-1">الاسم:
+                                        <b>
+                                            <span t-field="doc.name_ar"/>
+                                        </b>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td name="td_name" style="border: 1px solid black;">
+                                    <div class="mt-1 mb-1">Nationality:
+                                        <b>
+                                            <span t-field="doc.nationality"/>
+                                        </b>
+                                    </div>
+                                </td>
+                                <td name="td_name" class="text-end ">
+                                    <div class="mt-1 mb-1">الجنسيـة:
+                                        <b>
+                                            <span t-field="doc.arabic_country"/>
+                                        </b>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td name="td_name" style="border: 1px solid black;">
+                                    <div class="mt-1 mb-1">ID no:
+                                        <b>
+                                            <span t-field="doc.id_no"/>
+                                        </b>
+                                    </div>
+                                </td>
+                                <td name="td_name" class="text-end ">
+                                    <div class="mt-1 mb-1">الرقم التعريفي:
+                                        <b>
+                                            <span t-field="doc.id_no"/>
+                                        </b>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td name="td_name" style="border: 1px solid black;">
+                                    <div class="mt-1 mb-1">Job:
+                                        <b>
+                                            <span t-field="doc.job_id.name"/>
+                                        </b>
+                                    </div>
+                                </td>
+                                <td name="td_name" class="text-end ">
+                                    <div class="mt-1 mb-1">الوظيفة:
+                                        <b>
+                                            <span t-field="doc.job_arabic"/>
+                                        </b>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td name="td_name" style="border: 1px solid black;">
+                                    <div class="mt-1 mb-1">
+                                        Basic Salary:
+                                        <b>
+                                            <span t-field="doc.basic_salary"/>
+                                        </b>
+                                    </div>
+                                </td>
+                                <td name="td_name" class="text-end">
+                                    <div class="mt-1 mb-1">
+                                        <strong>
+                                            <span t-field="doc.basic_salary"/>
+                                        </strong>
+                                        : الراتب الأساسي
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td name="td_name" style="border: 1px solid black;">
+                                    <div class="mt-1 mb-1">Accommodation:
+                                        <b>
+                                            <span t-field="doc.accommodation"/>
+                                        </b>
+                                    </div>
+                                </td>
+                                <td name="td_name" class="text-end">
+                                    <div class="mt-1 mb-1">
+                                        <strong>
+                                            <span t-field="doc.accommodation"/>
+                                        </strong>
+                                        :السكن
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td name="td_name" style="border: 1px solid black;">
+                                    <div class="mt-1 mb-1">Transportation:
+                                        <b>
+                                            <span t-field="doc.transportation"/>
+                                        </b>
+                                    </div>
+                                </td>
+                                <td name="td_name" class="text-end">
+                                    <div class="mt-1 mb-1">
+                                        <strong>
+                                            <span t-field="doc.transportation"/>
+                                        </strong>
+                                        :بدل النقل
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td name="td_name" style="border: 1px solid black;">
+                                    <div class="mt-1 mb-1">Others:
+                                        <b>
+                                            <span t-field="doc.others"/>
+                                        </b>
+                                    </div>
+                                </td>
+                                <td name="td_name" class="text-end">
+                                    <div class="mt-1 mb-1">
+                                        <strong>
+                                            <span t-field="doc.others"/>
+                                        </strong>
+                                        :أخرى
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td name="td_name" style="border: 1px solid black;">
+                                    <div class="mt-1 mb-1">Total:
+                                        <b>
+                                            <span t-field="doc.total_offer"
+                                                  t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: currency_id}"/>
+                                        </b>
+                                    </div>
+                                </td>
+                                <td name="td_name" class="text-end">
+                                    <div class="mt-1 mb-1">
+                                        <strong>
+                                            <span t-field="doc.total_offer"
+                                                  t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: currency_id}"/>
+                                        </strong>
+                                        :الإجمالي
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td name="td_name" style="border: 1px solid black;">
+                                    <div class="mt-1 mb-1">Incentive: <b>According to Evaluation</b>
+                                    </div>
+                                </td>
+                                <td name="td_name" class="text-end ">
+                                    <div class="mt-1 mb-1">حوافز:
+                                        <b>بناء على التقييم</b>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td name="td_name" style="border: 1px solid black;">
+                                    <div class="mt-1 mb-1">Location:<b>
+                                            <span t-esc="doc.location or 'Industrial Area'"/>
+                                        </b>
+                                    </div>
+                                </td>
+                                <td name="td_name" class="text-end ">
+                                    <div class="mt-1 mb-1">الموقع: <b>
+                                            <span t-esc="doc.location or 'Industrial Area'"/>
+                                        </b>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td name="td_name" style="border: 1px solid black;">
+                                    <div class="mt-1 mb-1">Contract Period:
+                                        <b>
+                                            <span t-field="doc.contract_period"/>
+                                            year
+                                        </b>
+                                    </div>
+                                </td>
+                                <td name="td_name" class="text-end ">
+                                    <div class="mt-1 mb-1">مدة العقد:
+                                        <b>
+                                            <span t-field="doc.contract_period"/>
+                                            سنة
+                                        </b>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td name="td_name" style="border: 1px solid black;">
+                                    <div class="mt-1 mb-1">Contract Type:
+                                        <b>
+                                            <span t-field="doc.contract_type.name"/>
+                                        </b>
+                                    </div>
+                                </td>
+                                <td name="td_name" class="text-end ">
+                                    <div class="mt-1 mb-1">نوع العقد:
+                                        <b>
+                                            <span t-field="doc.contract_type_ar"/>
+                                        </b>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td name="td_name" style="border: 1px solid black;">
+                                    <div class="mt-1 mb-1">Probationary Period:
+                                        <b>
+                                            <span t-field="doc.probationary_period"/>
+                                            months
+                                        </b>
+                                    </div>
+                                </td>
+                                <td name="td_name" class="text-end ">
+                                    <div class="mt-1 mb-1">فترة التجربة:
+                                        <b>
+                                            <span t-field="doc.probationary_period"/>
+                                            شهور
+                                        </b>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr t-if="doc.leaves != '2'">
+                                <td name="td_name" style="border: 1px solid black;">
+                                    <div class="mt-1 mb-1">Annual Leave and Tickets:
+                                        <b>
+                                            <span t-field="doc.annual_leave_and_tickets"/>
+                                            days Annually
+                                        </b>
+                                    </div>
+                                </td>
+                                <td name="td_name" class="text-end ">
+                                    <div class="mt-1 mb-1">الإجازة السنوية والتذكرة:
+                                        <b>
+                                            <span t-field="doc.annual_leave_and_tickets"/>
+                                            يوم سنويا
+                                        </b>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr t-if="doc.leaves == '2'">
+                                <td name="td_name" style="border: 1px solid black;">
+                                    <div class="mt-1 mb-1">Annual Leave and Tickets:
+                                        <b>
+                                            <span t-field="doc.annual_leave_and_tickets"/>
+                                            days every 2 years
+                                        </b>
+                                    </div>
+                                </td>
+                                <td name="td_name" class="text-end ">
+                                    <div class="mt-1 mb-1">الإجازة السنوية والتذكرة:
+                                        <b>
+                                            <span t-field="doc.annual_leave_and_tickets"/>
+                                            يومًا كل عامين
+                                        </b>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td name="td_name" style="border: 1px solid black;">
+                                    <div class="mt-1 mb-1">Medical Insurance: <b>Hamad Medical Corp. Only</b>
+                                    </div>
+                                </td>
+                                <td name="td_name" class="text-end ">
+                                    <div class="mt-1 mb-1">التأمين الصحي: <b>مؤسسة حمد الصحية فقط</b>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td name="td_name" style="border: 1px solid black;">
+                                    <div class="mt-1 mb-1">
+                                        <b>As Law No. (14) of 2004 the Labor Law Qatar</b>
+                                    </div>
+                                </td>
+                                <td name="td_name" class="text-end ">
+                                    <div class="mt-1 mb-1">
+                                        <b>قانون رقم (14) لسنة 2004 بإصدار قانون العمل</b>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr t-if="doc.comments or doc.comments_ar">
+                                <td name="td_name" style="border: 1px solid black;">
+                                    <div class="mt-1 mb-1">Comments:
+                                        <b>
+                                            <span t-field="doc.comments"/>
+                                        </b>
+                                    </div>
+                                </td>
+                                <td name="td_name" class="text-end ">
+                                    <div class="mt-1 mb-1">تعليقات:
+                                        <b>
+                                            <span t-field="doc.comments_ar"/>
+                                        </b>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <t t-if="doc.notes">
+                        <div class="row" t-if="doc.approved_user">Note :
+                            <span t-field="doc.notes"/>
+                        </div>
+                    </t>
+                    <table class="table table-sm o_main_table mt-4" style="border: 1px solid black;">
+                        <tbody>
+                            <tr>
+                                <td name="td_name" style="border: 1px solid black;">
+                                    <div class="mt-2 mb-2">
+                                        <b>Manager Signature:</b>
+                                    </div>
+                                    <div class="mt-1 mb-1" t-if="doc.approved_user">Approved By:
+                                        <span t-field="doc.approved_user.name"/>
+                                    </div>
+                                    <div class="mt-1 mb-1" t-if="doc.approved_user">on
+                                        <span t-field="doc.approved_date"
+                                              t-options="{&quot;widget&quot;: &quot;date&quot;}"/>
+                                    </div>
+                                </td>
+                                <td name="td_name" class="text-end ">
+                                    <div class="mt-2 mb-5">
+                                        <b>:توقيع المدير</b>
+                                    </div>
+                                    <div style="font-size: 5px;" class="mt-2 mb-4">
+                                        <b>°</b>
+                                    </div>
+                                </td>
+                            </tr>
+                             <tr>
+                                <td name="td_name" style="width:50%; border: 1px solid black;">
+                                  <div class="mt-1 mb-1">Employee Signature:</div>
+                                  <div class="mt-1 mb-1">
+                                    <br/>
+                                  </div>
+                                  <div class="mt-1 mb-1">
+                                    <br/>
+                                  </div>
+                                </td>
+                                <td name="td_name" style="font-size: 15px !important; width:50%; border: 1px solid black;" class="text-end">
+                                  <div class="mt-1 mb-1">توقيع الموظف<br/>
+                                  </div>
+                                </td>
+                              </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </main>
+    </template>
+
+
+    <!-- Report with header -->
+    <template id="report_offer_letter">
+        <t t-call="web.external_layout">
+            <t t-call="offer_letter.offer_letter_table_content"/>
+        </t>
+    </template>
+
+    <!-- Report without header -->
+    <template id="report_offer_letter_no_header">
+        <t t-call="web.basic_layout">
+            <t t-call="offer_letter.offer_letter_table_content"/>
+        </t>
+    </template>
+
+
+</odoo>

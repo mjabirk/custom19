@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_qatar_wps_wizard_form" model="ir.ui.view">
+        <field name="name">qatar.wps.wizard.form</field>
+        <field name="model">qatar.wps.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Generate Qatar WPS File">
+                <group>
+                    <group>
+                        <field name="batch_ids" widget="many2many_tags"/>
+                    </group>
+                    <group>
+                        <field name="date_start"/>
+                        <field name="date_end"/>
+                    </group>
+                </group>
+                <group invisible="not sif_file">
+                    <field name="sif_filename" invisible="1"/>
+                    <field name="sif_file" filename="sif_filename" readonly="1" widget="binary"/>
+                </group>
+                <footer>
+                    <button name="generate_wps_file" string="Generate" type="object" class="btn-primary" invisible="sif_file"/>
+                    <button string="Close" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_qatar_wps_wizard" model="ir.actions.act_window">
+        <field name="name">Qatar WPS Report</field>
+        <field name="res_model">qatar.wps.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_qatar_wps_report"
+              name="Qatar WPS"
+              parent="hr_payroll.menu_hr_payroll_report"
+              action="action_qatar_wps_wizard"
+              sequence="20"/>
+</odoo>

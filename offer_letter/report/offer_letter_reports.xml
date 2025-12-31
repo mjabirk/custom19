@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Report Action with Letterhead -->
+    <record id="action_report_offer_letter" model="ir.actions.report">
+        <field name="name">Offer Letter (With Header)</field>
+        <field name="model">offer.letter</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">offer_letter.report_offer_letter</field>
+        <field name="report_file">offer_letter.report_offer_letter</field>
+        <field name="print_report_name">'Offer Letter - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="model_offer_letter"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- Report Action without Letterhead -->
+    <record id="action_report_offer_letter_no_header" model="ir.actions.report">
+        <field name="name">Offer Letter (No Header)</field>
+        <field name="model">offer.letter</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">offer_letter.report_offer_letter_no_header</field>
+        <field name="report_file">offer_letter.report_offer_letter_no_header</field>
+        <field name="print_report_name">'Offer Letter - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="model_offer_letter"/>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>
+
+
+
+<!--    <report-->
+<!--        id="action_report_offer_letter"-->
+<!--        model="offer.letter"-->
+<!--        string="Offer Letter"-->
+<!--        report_type="qweb-pdf"-->
+<!--        name="offer_letter.report_offer_letter"-->
+<!--        file="offer_letter.report_offer_letter"-->
+<!--        print_report_name="'Offer Letter - %s' % (object.name)"-->
+<!--    />-->
+
+<!--    &lt;!&ndash; Report Action (without header) &ndash;&gt;-->
+<!--    <report-->
+<!--        id="action_report_offer_letter_no_header"-->
+<!--        model="offer.letter"-->
+<!--        string="Offer Letter (No Header)"-->
+<!--        report_type="qweb-pdf"-->
+<!--        name="offer_letter.report_offer_letter_no_header"-->
+<!--        file="offer_letter.report_offer_letter_no_header"-->
+<!--        print_report_name="'Offer Letter - %s' % (object.name)"-->
+<!--    />-->

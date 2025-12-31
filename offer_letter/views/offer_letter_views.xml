@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Action Buttons + Form -->
+    <record id="view_offer_letter_form" model="ir.ui.view">
+        <field name="name">offer.letter.form</field>
+        <field name="model">offer.letter</field>
+        <field name="arch" type="xml">
+            <form string="Offer Letter">
+                <header>
+                    <button name="action_approve" string="Approve" type="object"
+                            class="btn-primary"
+                            invisible="state == 'approved'"/>
+                    <button name="action_draft" string="Set to Draft" type="object"
+                            class="btn-secondary"
+                            invisible="state != 'approved'"/>
+                    <button name="action_print_with_header" string="Print (With Header)" type="object"
+                            class="btn-secondary"/>
+                    <button name="action_print_without_header" string="Print (Without Header)" type="object"
+                            class="btn-secondary"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,approved"/>
+                </header>
+
+                <sheet>
+                    <field name="active" invisible="1"/>
+
+                    <group>
+                        <group>
+                            <field name="reference" readonly="1"/>
+                            <field name="date" readonly="state == 'approved'"/>
+                            <field name="name" readonly="state == 'approved'"/>
+                            <field name="name_ar" string="Name (Arabic)" readonly="state == 'approved'"/>
+                            <field name="nationality" readonly="state == 'approved'"/>
+                            <field name="arabic_country" readonly="1"/>
+                            <field name="id_no" readonly="state == 'approved'"/>
+                            <field name="job_id" readonly="state == 'approved'"/>
+                            <field name="job_arabic" readonly="1"/>
+                            <field name="probationary_period" readonly="state == 'approved'"/>
+                            <field name="annual_leave_and_tickets" readonly="state == 'approved'"/>
+                            <field name="leaves" readonly="state == 'approved'"/>
+                        </group>
+
+                        <group>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="contract_period" string="Contract Period (Year)" readonly="state == 'approved'"/>
+                            <field name="contract_type" readonly="state == 'approved'"/>
+                            <field name="contract_type_ar" readonly="state == 'approved'"/>
+                            <field name="basic_salary" widget="monetary"
+                                   options="{'currency_field': 'currency_id'}"
+                                   readonly="state == 'approved'"/>
+                            <field name="accommodation" widget="monetary"
+                                   options="{'currency_field': 'currency_id'}"
+                                   readonly="state == 'approved'"/>
+                            <field name="transportation" widget="monetary"
+                                   options="{'currency_field': 'currency_id'}"
+                                   readonly="state == 'approved'"/>
+                            <field name="others" widget="monetary"
+                                   options="{'currency_field': 'currency_id'}"
+                                   readonly="state == 'approved'"/>
+                            <field name="total_offer" widget="monetary" readonly="1"
+                                   options="{'currency_field': 'currency_id'}"/>
+                            <field name="company_id"
+                                   groups="base.group_multi_company"
+                                   options="{'no_create': True}"
+                                   readonly="state == 'approved'"/>
+                            <field name="approved_user" readonly="1"/>
+                            <field name="approved_date" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <field name="comments" readonly="state == 'approved'"/>
+                        <field name="comments_ar" readonly="state == 'approved'"/>
+                    </group>
+
+                    <group>
+                        <field name="location" readonly="state == 'approved'"/>
+                        <field name="notes" placeholder="Type down your notes here..."
+                               nolabel="1" readonly="state == 'approved'"/>
+                    </group>
+                </sheet>
+
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- list View -->
+    <record id="view_offer_letter_list" model="ir.ui.view">
+        <field name="name">offer.letter.list</field>
+        <field name="model">offer.letter</field>
+        <field name="arch" type="xml">
+            <list string="Offer Letters" default_order="id desc">
+                <field name="reference"/>
+                <field name="date"/>
+                <field name="name"/>
+                <field name="job_id"/>
+                <field name="nationality"/>
+                <field name="basic_salary"/>
+                <field name="accommodation"/>
+                <field name="others"/>
+                <field name="total_offer"/>
+                <field name="state"/>
+                <field name="company_id"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_offer_letter" model="ir.actions.act_window">
+        <field name="name">Offer Letters</field>
+        <field name="res_model">offer.letter</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Menu -->
+    <menuitem id="menu_offer_letter_root" name="Offer Letters" parent="hr_work_entry_contract_enterprise.menu_hr_payroll_root" sequence="35"/>
+    <menuitem id="menu_offer_letter" name="Offer Letters" parent="menu_offer_letter_root" action="action_offer_letter"/>
+</odoo>

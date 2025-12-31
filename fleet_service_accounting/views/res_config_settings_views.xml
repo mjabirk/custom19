@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="res_config_settings_view_form" model="ir.ui.view">
+            <field name="name">res.config.settings.view.form.inherit.fleet.accounting</field>
+            <field name="model">res.config.settings</field>
+            <field name="priority" eval="95"/>
+            <field name="inherit_id" ref="fleet.res_config_settings_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//block[@id='end_contract_setting']" position="inside">
+                        <h2>Fleet Service Accounting</h2>
+                        <div class="row mt16 o_settings_container" id="end_contract_setting">
+                            <div class="col-12 col-lg-6 o_setting_box">
+
+                                <div class="row mt16">
+                                    <label string="Service Expense Journal" for="service_expense_journal_id" />
+                                    <field name="service_expense_journal_id"/>
+                                </div>
+                                <div class="row">
+                                    <label string="Service Expense Debit Account" for="service_expense_debit_account_id" />
+                                    <div class="content-group">
+                                        <field name="service_expense_debit_account_id"  />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <label string="Service Expense Credit Account" for="service_expense_credit_account_id" />
+                                    <div class="content-group">
+                                        <field name="service_expense_credit_account_id"  />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

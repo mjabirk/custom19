@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_customer_evaluation_lines_user,customer_evaluation_lines_user,model_customer_evaluation_lines,base.group_user,1,0,0,0
+access_customer_evaluation_lines_manager,customer_evaluation_lines_manager,model_customer_evaluation_lines,account.group_account_user,1,1,1,1
+access_customer_suspicious_activity_all,customer.suspicious.activity_all,model_customer_suspicious_activity,,1,0,0,0
+access_customer_suspicious_activity_manager,customer.suspicious.activity_manager,model_customer_suspicious_activity,account.group_account_user,1,1,1,1
