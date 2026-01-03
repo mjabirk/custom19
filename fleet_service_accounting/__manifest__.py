@@ -3,7 +3,7 @@
     'name': 'Fleet Service Accounting',
     'summary': 'Fleet Service Accounting',
     'description': """Integration of fleet service with inventory and accounting""",
-    'version': '18.02',
+    'version': '1.0',
     'sequence': 1,
     'email': 'info@misnedtech.com ',
     'website':'https://misnedtech.com/',
