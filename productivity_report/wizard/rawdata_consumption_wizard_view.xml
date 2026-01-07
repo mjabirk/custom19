@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <record id="view_raw_data_analysis" model="ir.ui.view">
+            <field name="name">Raw Data Consumption</field>
+            <field name="model">raw.data.consumption.analysis</field>
+            <field name="arch" type="xml">
+            <form string="Raw Data Consumption">
+                <span class="o_form_label">This wizard will generate raw data consumption analysis report.</span>
+                <footer>
+                    <button name="print_report" string="Print" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel" />
+                </footer>
+                <group>
+                    <field name="based_on"/>
+                </group>
+                <group>
+                    <field name="start_date"/>
+                    <field name="end_date"/>
+                </group>
+            </form>
+            </field>
+        </record>
+
+        <record id="action_raw_data_analysis" model="ir.actions.act_window">
+            <field name="name">Raw Data Consumption</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">raw.data.consumption.analysis</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem
+            name="Raw Data Consumption"
+            parent="stock.menu_warehouse_report"
+            sequence="200"
+            action="action_raw_data_analysis"
+            id="menu_raw_data_analysis"
+           />
+</odoo>

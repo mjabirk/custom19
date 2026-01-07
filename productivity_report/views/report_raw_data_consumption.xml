@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="report_raw_data_consumption">
+        <t t-call="web.html_container">
+        <t t-call="web.internal_layout">
+        <t t-foreach="docs" t-as="o">
+            <div class="page">
+                <div class="text-center">
+	                <h2>Raw Data Consumption</h2>
+	                <p>
+	                    From <u><span t-field="o.start_date"/></u> To <u><span t-field="o.end_date"/></u>
+	                </p>
+                </div>
+                <table class="table table-sm">
+                    <thead>
+                        <tr style="border-top: 1px solid black">
+                            <th>Name</th>
+                            <th>Consumption from Alkon</th>
+                            <th>Consumption from Odoo</th>
+                            <th class="text-right">Difference</th>
+                            <th class="text-right">Difference %</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-set="products" t-value="get_data"/>
+                        <t t-foreach="products" t-as="p">
+                            <tr>
+                                <td><span t-esc="p"/></td>
+                                <td class="text-right"><span t-esc="products[p]['raw_data_qty']"/></td>
+                                <td class="text-right"><span t-esc="products[p]['odoo_qty']"/></td>
+                                <td class="text-right"><span t-esc="products[p]['odoo_qty']-products[p]['raw_data_qty']"/></td>
+                                <td class="text-right"><span t-esc="products[p]['odoo_qty'] and round((products[p]['odoo_qty']-products[p]['raw_data_qty'])*100/products[p]['odoo_qty'],2) or 0"/></td>
+                            </tr>
+                        </t>
+                    </tbody>
+                    <tfoot>
+                    </tfoot>
+                </table>
+                <t t-set="delivery_names" t-value="get_delivery_names"/>
+                <t t-if="delivery_names">
+                    <div class="text-center">
+                        <h2>Delivery Orders</h2>
+                        <p>
+                            <span t-esc="str(delivery_names) + ' Count: '+str(len(delivery_names))"/>
+                        </p>
+                    </div>
+                </t>
+            </div>
+        </t>
+        </t>
+        </t>
+    </template>
+</odoo>

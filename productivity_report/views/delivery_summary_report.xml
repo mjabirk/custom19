@@ -1,0 +1,58 @@
+<odoo>
+
+    <template id="report_delivery_summary_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="invoice">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <!-- Header -->
+                        <div class="row mb-2">
+                            <div class="col-6">
+                                <h2>Delivery Summary</h2>
+                                <strong>Invoice:</strong> <span t-esc="invoice.name"/><br/>
+                                <strong>Customer:</strong> <span t-esc="invoice.partner_id.name"/>
+                            </div>
+                        </div>
+
+                        <t t-set="total_quantity" t-value="0.0"/>
+                        <!-- Table -->
+                        <table class="table table-sm table-bordered" style="font-size:11px;">
+                            <thead>
+                                <tr>
+                                    <th>Ticket</th>
+                                    <th>Date</th>
+                                    <th>Plant</th>
+                                    <th>Truck</th>
+                                    <th class="text-right">Load</th>
+                                    <th>Item</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="delivery_data[invoice.id]" t-as="line">
+                                    <t t-set="total_quantity" t-value="total_quantity + line.x_quantity"/>
+                                    <t t-set="adjusted_date" t-value="line.x_date and (line.x_date + relativedelta(hours=3))"/>
+                                    <tr>
+                                        <td><t t-esc="line.x_ticket_ref"/></td>
+                                        <td><t t-esc="adjusted_date.strftime('%d/%m/%y %I:%M:%S %p')"/></td>
+                                        <td><t t-esc="line.x_studio_production_plant"/></td>
+                                        <td><t t-esc="line.x_vehicle"/></td>
+                                        <td class="text-right"><t t-esc="line.x_quantity"/></td>
+                                        <td><t t-esc="line.x_item_code"/></td>
+                                        <td><t t-esc="line.x_item_name"/></td>
+                                    </tr>
+                                </t>
+                                <tr>
+                                    <td colspan="2" ><strong></strong></td>
+                                    <td colspan="2" class="text-right"><strong>Total Quantity (m³)</strong></td>
+                                    <td class="text-right"><strong><t t-esc="total_quantity"/></strong></td>
+                                    <td colspan="2"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

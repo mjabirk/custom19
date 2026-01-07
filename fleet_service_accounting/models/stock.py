@@ -10,12 +10,16 @@ class StockMove(models.Model):
     _inherit = "stock.move"
     fleet_service_line_id = fields.Many2one('fleet.service.products', 'Service Product Line', index=True,readonly=False)
 
+class Partner(models.Model):
+    _inherit = 'res.partner'
+    mobile_number = fields.Char('Mobile Number')
+
 
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
 
     fleet_service_id = fields.Many2one('fleet.vehicle.log.services', string="Fleet Service", readonly=False)
-    mobile = fields.Char(related='partner_id.mobile')
+    mobile = fields.Char(related='partner_id.mobile_number')
 
 
     def _sms_get_number_fields(self):
