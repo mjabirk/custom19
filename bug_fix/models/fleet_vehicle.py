@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from odoo import api, models, fields, _
-from odoo.osv import expression
 
 
 
@@ -11,11 +10,14 @@ class FleetVehicle(models.Model):
     def _name_search(self, name, domain=None, operator='ilike', limit=None, order=None):
         domain = domain or []
         if name:
-            name_domain = ['|', '|', '|', ('name', operator, name), ('license_plate', operator, name),
-                      ('x_studio_woqod_number', operator, name), ('x_studio_vehicle_code', operator, name),]
-            return self._search(expression.AND([name_domain, domain]), limit=limit, order=order)
+            name_domain = ['|', '|', '|',
+                           ('name', operator, name),
+                           ('license_plate', operator, name),
+                           ('x_studio_woqod_number', operator, name),
+                           ('x_studio_vehicle_code', operator, name)]
+            # Combine lists using + operator (implicitly ANDs them)
+            return self._search(name_domain + domain, limit=limit, order=order)
         return super()._name_search(name, domain, operator, limit, order)
-
 
     @api.depends('model_id.brand_id.name', 'model_id.name', 'license_plate', 'x_studio_vehicle_code')
     def _compute_vehicle_name(self):

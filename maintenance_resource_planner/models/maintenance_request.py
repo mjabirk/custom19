@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from odoo import api, models, fields, _
-from odoo.osv import expression
 import logging
 from odoo.exceptions import UserError, ValidationError
 

@@ -16,8 +16,8 @@ class ReportRawDataCons(models.AbstractModel):
         if based_on == 'date':
             query = """select x_item_code, sum(x_quantity )  from x_alkon_raw_data 
                         WHERE x_date >= %s and x_date <= %s  and x_record_type = 'Inventory' and x_inventory_trans_type in ('A','U') group by x_item_code"""
-            self._cr.execute(query, (start_date, end_date))
-            for product, quantity in self._cr.fetchall():
+            self.env.cr.execute(query, (start_date, end_date))
+            for product, quantity in self.env.cr.fetchall():
                 if product:
                     if product_list.get(product):
                         product_list[product]['raw_data_qty'] -= quantity
@@ -25,10 +25,10 @@ class ReportRawDataCons(models.AbstractModel):
                         product_list[product] = {'raw_data_qty':-1*quantity,
                                                  'odoo_qty':0}
             picking_types = self.env['stock.picking.type'].search([('code', '=', 'outgoing')])
-            query = """select p.default_code, sum(l.qty_done )  from stock_move_line l join product_product p on p.id = l.product_id join stock_picking pick on l.picking_id = pick.id
+            query = """select p.default_code, sum(l.quantity )  from stock_move_line l join product_product p on p.id = l.product_id join stock_picking pick on l.picking_id = pick.id
                         WHERE pick.date_done >= %s and pick.date_done <= %s  and l.state = 'done' and pick.picking_type_id in %s group by p.default_code"""
-            self._cr.execute(query, (start_date, end_date,tuple(picking_types.ids)))
-            for product, quantity in self._cr.fetchall():
+            self.env.cr.execute(query, (start_date, end_date,tuple(picking_types.ids)))
+            for product, quantity in self.env.cr.fetchall():
                 if product:
                     if product_list.get(product):
                         product_list[product]['odoo_qty'] += quantity
@@ -37,10 +37,10 @@ class ReportRawDataCons(models.AbstractModel):
                                                  'odoo_qty':quantity}
         else:
             picking_types = self.env['stock.picking.type'].search([('code', '=', 'outgoing')])
-            query = """select p.default_code, sum(l.qty_done )  from stock_move_line l join product_product p on p.id = l.product_id join stock_picking pick on l.picking_id = pick.id
+            query = """select p.default_code, sum(l.quantity )  from stock_move_line l join product_product p on p.id = l.product_id join stock_picking pick on l.picking_id = pick.id
                                     WHERE pick.date_done >= %s and pick.date_done <= %s  and l.state = 'done' and pick.picking_type_id in %s group by p.default_code"""
-            self._cr.execute(query, (start_date, end_date, tuple(picking_types.ids)))
-            for product, quantity in self._cr.fetchall():
+            self.env.cr.execute(query, (start_date, end_date, tuple(picking_types.ids)))
+            for product, quantity in self.env.cr.fetchall():
                 if product:
                     if product_list.get(product):
                         product_list[product]['odoo_qty'] += quantity
@@ -48,14 +48,14 @@ class ReportRawDataCons(models.AbstractModel):
                         product_list[product] = {'raw_data_qty': 0,
                                                  'odoo_qty': quantity}
             query = """select name  from  stock_picking WHERE date_done >= %s and date_done <= %s  and state = 'done' and picking_type_id in %s"""
-            self._cr.execute(query, (start_date, end_date, tuple(picking_types.ids)))
-            delivery_names = self._cr.fetchall()
+            self.env.cr.execute(query, (start_date, end_date, tuple(picking_types.ids)))
+            delivery_names = self.env.cr.fetchall()
             delivery_names = tuple([x[0] for x in delivery_names])
             if delivery_names:
                 query = """select x_item_code, sum(x_quantity )  from x_alkon_raw_data 
                             WHERE x_studio_delivery_ref_dn in %s and x_record_type = 'Inventory' and x_inventory_trans_type in ('A','U') group by x_item_code"""
-                self._cr.execute(query, (delivery_names,),)
-                for product, quantity in self._cr.fetchall():
+                self.env.cr.execute(query, (delivery_names,),)
+                for product, quantity in self.env.cr.fetchall():
                     if product:
                         if product_list.get(product):
                             product_list[product]['raw_data_qty'] -= quantity
